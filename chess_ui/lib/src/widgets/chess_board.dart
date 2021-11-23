@@ -3,6 +3,7 @@ import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
 var isPlayerOne = true;
+bool isPlayerTurn = true;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
 
@@ -38,6 +39,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   {
                     setState(() {
                       isPlayerOne = false;
+                      isPlayerTurn = false;
                     })
                   }
               });
@@ -46,7 +48,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         print('updateBoard');
         print(data);
         _controller.loadPGN(data);
-        setState(() {});
+        setState(() {
+          isPlayerTurn = true;
+        });
       });
 
       socket.on("gameOver", (data) {
@@ -76,6 +80,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ChessBoard(
+        enableUserMoves: isPlayerTurn,
         boardOrientation: isPlayerOne ? PlayerColor.white : PlayerColor.black,
         boardColor: BoardColor.orange,
         controller: _controller,
@@ -92,7 +97,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           if (_controller.isCheckMate()) {
             socket.emit("checkmate", {'checkmate ho gya hai bhai'});
           }
-
+          setState(() {
+            isPlayerTurn = false;
+          });
           // _controller.loadPGN(
           //     "1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 d6 5. exf6 Qxf6 6. Qf3 Qxc3");
         }
