@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-bool isPlayerOne = true;
+bool isPlayerWhite = true;
 bool isPlayerTurn = true;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
@@ -22,7 +22,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   void connectToServer() {
     print('connecting to server...');
     try {
-      socket = IO.io(testURL, <String, dynamic>{
+      // establishing connection and opening the sockets
+      socket = IO.io(finalURL, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });
@@ -30,7 +31,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.on('connect', (_) {
         print('connected');
       });
-      socket.emit('/test', 'test');
+      //  test code
+      // socket.emit('/test', 'test');
+      // set the players as white or black on game start
       socket.on(
           'startGame',
           (playerOneID) => {
@@ -38,12 +41,12 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                 if (socket.id != playerOneID)
                   {
                     setState(() {
-                      isPlayerOne = false;
+                      isPlayerWhite = false;
                       isPlayerTurn = false;
                     })
                   }
               });
-
+// update the state of the board when the server notifies the client of a move
       socket.on('updateBoard', (data) {
         print('updateBoard');
         print(data);
@@ -52,7 +55,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           isPlayerTurn = true;
         });
       });
-
+      // checkmate event handler
       socket.on("Checkmate", (data) {
         print(data);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -60,7 +63,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         ));
         socket.emit("Roger", {'Checkmate'});
       });
-
+      // stalemate event handler
       socket.on("Stalemate", (data) {
         print(data);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -68,7 +71,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         ));
         socket.emit("Roger", {'Stalemate'});
       });
-
+      // draw event handler
       socket.on("Draw", (data) {
         print(data);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -100,29 +103,34 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     return Center(
       child: ChessBoard(
         enableUserMoves: isPlayerTurn,
-        boardOrientation: isPlayerOne ? PlayerColor.white : PlayerColor.black,
+        boardOrientation: isPlayerWhite ? PlayerColor.white : PlayerColor.black,
         boardColor: BoardColor.orange,
         controller: _controller,
         onMove: () {
           String currPGN = "";
           for (String? s in _controller.getSan()) {
-            // print(s);
             currPGN += (s ?? "") + " ";
           }
           print(currPGN);
 
           socket.emit('moved', currPGN);
 
+          // check if the player is in checkmate
           if (_controller.isCheckMate()) {
             socket.emit("checkmate", {'checkmate ho gya hai bhai'});
-          } else if (_controller.isStaleMate()) {
+          }
+          // check stalemate
+          else if (_controller.isStaleMate()) {
             socket.emit("stalemate", {'stalemate ho gya hai bhai'});
-          } else if (_controller.isDraw() ||
+          }
+          // check draw
+          else if (_controller.isDraw() ||
               _controller.isInsufficientMaterial() ||
               _controller.isThreefoldRepetition()) {
             socket.emit("draw", {'draw ho gya hai bhai'});
           }
 
+          // if the player has made a move, then it is not their turn anymore
           setState(() {
             isPlayerTurn = false;
           });
