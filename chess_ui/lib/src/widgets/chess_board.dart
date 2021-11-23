@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
-var isPlayerOne = true;
+bool isPlayerOne = true;
 bool isPlayerTurn = true;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
@@ -53,12 +53,31 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         });
       });
 
-      socket.on("gameOver", (data) {
+      socket.on("Checkmate", (data) {
         print(data);
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('Checkmate'),
         ));
-        socket.emit("Roger", {''});
+        socket.emit("Roger", {'Checkmate'});
+      });
+
+      socket.on("Stalemate", (data) {
+        print(data);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Stalemate'),
+        ));
+        socket.emit("Roger", {'Stalemate'});
+      });
+
+      socket.on("Draw", (data) {
+        print(data);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Draw'),
+        ));
+        setState(() {
+          isPlayerTurn = false;
+        });
+        socket.emit("Roger", {'Draw'});
       });
     } catch (e) {
       print(e.toString());
@@ -96,29 +115,18 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
 
           if (_controller.isCheckMate()) {
             socket.emit("checkmate", {'checkmate ho gya hai bhai'});
+          } else if (_controller.isStaleMate()) {
+            socket.emit("stalemate", {'stalemate ho gya hai bhai'});
+          } else if (_controller.isDraw() ||
+              _controller.isInsufficientMaterial() ||
+              _controller.isThreefoldRepetition()) {
+            socket.emit("draw", {'draw ho gya hai bhai'});
           }
+
           setState(() {
             isPlayerTurn = false;
           });
-          // _controller.loadPGN(
-          //     "1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 d6 5. exf6 Qxf6 6. Qf3 Qxc3");
-        }
-        // if (_controller.isCheckMate()) {
-
-        //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-        //     content: Text('Checkmate'),
-        //   ));
-        // }
-
-        // Code to generate PGN after every move.. which will then be sent on server to be broadcasted to the other player
-
-        // String currPGN = "";
-        // for (String? s in _controller.getSan()) {
-        //   print(s);
-        //   currPGN += (s ?? "") + " ";
-        // }
-        // print(currPGN);
-        ,
+        },
       ),
     );
   }

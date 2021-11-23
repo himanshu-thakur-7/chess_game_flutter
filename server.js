@@ -17,10 +17,20 @@ io.on('connection', function (socket) {
     });
     socket.on("checkmate", (data) => {
         console.log(data);
-        io.emit("gameOver", "Checkmated bro!!");
+        io.emit("Checkmate", "Checkmated bro!!");
     });
-    socket.on("Roger", (_) => {
-        console.log("Roger");
+
+    socket.on("draw", (data) => {
+        console.log(data);
+        io.emit("Draw", "Draw bro!!");
+    });
+    socket.on("stalemate", (data) => {
+        console.log(data);
+        io.emit("Stalemate", "Stalemate bro!!");
+    });
+
+    socket.on("Roger", (affirmation) => {
+        console.log(affirmation);
     })
 });
 
