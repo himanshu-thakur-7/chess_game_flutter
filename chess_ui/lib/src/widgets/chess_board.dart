@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+var isPlayerOne = true;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
 
@@ -29,6 +30,18 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         print('connected');
       });
       socket.emit('/test', 'test');
+      socket.on(
+          'startGame',
+          (playerOneID) => {
+                print('playerOneID: $playerOneID'),
+                if (socket.id != playerOneID)
+                  {
+                    setState(() {
+                      isPlayerOne = false;
+                    })
+                  }
+              });
+
       socket.on('updateBoard', (data) {
         print('updateBoard');
         print(data);
@@ -63,6 +76,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   Widget build(BuildContext context) {
     return Center(
       child: ChessBoard(
+        boardOrientation: isPlayerOne ? PlayerColor.white : PlayerColor.black,
         boardColor: BoardColor.orange,
         controller: _controller,
         onMove: () {

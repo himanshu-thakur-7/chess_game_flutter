@@ -10,6 +10,7 @@ io.on('connection', function (socket) {
     socket.on('/test', function (msg) {
         console.log(msg);
     });
+    io.emit("startGame", socket.id);
     socket.on('moved', (data) => {
         console.log(data);
         socket.broadcast.emit('updateBoard', data);
