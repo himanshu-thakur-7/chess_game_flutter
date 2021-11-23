@@ -1,28 +1,5 @@
-// const http = require('http');
+const { Console } = require('console');
 
-// const server = http.createServer((req, res) => {
-//     res.end('I am connected');
-// });
-
-// PORT = process.env.PORT || 8000;
-
-// const io = require('socket.io')(server, {
-//     cors: {
-//         origin: '*',
-//     }
-// });
-
-
-// io.on('connection', (socket) => {
-//     console.log('New client connected');
-// })
-
-// server.listen(PORT, () => {
-//     console.log(`Server is running on port ${PORT}`);
-
-// })
-var express = require('express');
-var app = require('express')();
 var server = require('http').createServer((req, res) => {
     res.end('I am connected');
 });
@@ -35,9 +12,17 @@ io.on('connection', function (socket) {
     });
     socket.on('moved', (data) => {
         console.log(data);
+        socket.broadcast.emit('updateBoard', data);
     });
+    socket.on("checkmate", (data) => {
+        console.log(data);
+        io.emit("gameOver", "Checkmated bro!!");
+    });
+    socket.on("Roger", (_) => {
+        console.log("Roger");
+    })
 });
 
-var port = 8080;
+var port = process.env.PORT || 8080;
 console.log(port);
 server.listen(port);

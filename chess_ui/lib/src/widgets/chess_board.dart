@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
 
+const finalURL = "https://chess-server7.herokuapp.com";
+const testURL = "http://localhost:8080";
+
 class ChessBoardWidget extends StatefulWidget {
   const ChessBoardWidget({Key? key}) : super(key: key);
 
@@ -17,7 +20,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   void connectToServer() {
     print('connecting to server...');
     try {
-      socket = IO.io('http://localhost:8080', <String, dynamic>{
+      socket = IO.io(testURL, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });
@@ -26,6 +29,20 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         print('connected');
       });
       socket.emit('/test', 'test');
+      socket.on('updateBoard', (data) {
+        print('updateBoard');
+        print(data);
+        _controller.loadPGN(data);
+        setState(() {});
+      });
+
+      socket.on("gameOver", (data) {
+        print(data);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Checkmate'),
+        ));
+        socket.emit("Roger", {''});
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -57,6 +74,10 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           print(currPGN);
 
           socket.emit('moved', currPGN);
+
+          if (_controller.isCheckMate()) {
+            socket.emit("checkmate", {'checkmate ho gya hai bhai'});
+          }
 
           // _controller.loadPGN(
           //     "1. e4 e5 2. Nc3 Nf6 3. f4 exf4 4. e5 d6 5. exf6 Qxf6 6. Qf3 Qxc3");
