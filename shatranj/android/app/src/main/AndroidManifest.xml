@@ -1,7 +1,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.chess_ui">
    <application
-        android:label="chess_ui"
+        android:label="shatranj"
         android:icon="@mipmap/ic_launcher">
         <activity
             android:name=".MainActivity"
