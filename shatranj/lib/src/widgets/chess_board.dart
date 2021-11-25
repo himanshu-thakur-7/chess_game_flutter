@@ -27,7 +27,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     print('connecting to server...');
     try {
       // establishing connection and opening the sockets
-      socket = IO.io(testURL, <String, dynamic>{
+      socket = IO.io(finalURL, <String, dynamic>{
         'transports': ['websocket'],
         'autoConnect': false,
       });
