@@ -31,26 +31,28 @@ io.on('connection', function (socket) {
             io.to(roomID).emit('startGame', socket.id);
         }
 
-    });
+
+        socket.on('moved', (data) => {
+            console.log(data);
+            socket.to(roomID).emit('updateBoard', data);
+        });
+        socket.on("checkmate", (data) => {
+            console.log(data);
+            io.to(roomID).emit("Checkmate", "Checkmated bro!!");
+        });
+
+        socket.on("draw", (data) => {
+            console.log(data);
+            io.to(roomID).emit("Draw", "Draw bro!!");
+        });
+        socket.on("stalemate", (data) => {
+            console.log(data);
+            io.to(roomID).emit("Stalemate", "Stalemate bro!!");
+        });
 
 
-    socket.on('moved', (data) => {
-        console.log(data);
-        socket.to(roomID).emit('updateBoard', data);
-    });
-    socket.on("checkmate", (data) => {
-        console.log(data);
-        io.to(roomID).emit("Checkmate", "Checkmated bro!!");
     });
 
-    socket.on("draw", (data) => {
-        console.log(data);
-        io.to(roomID).emit("Draw", "Draw bro!!");
-    });
-    socket.on("stalemate", (data) => {
-        console.log(data);
-        io.to(roomID).emit("Stalemate", "Stalemate bro!!");
-    });
 
     socket.on("Roger", (affirmation) => {
         console.log(affirmation);
