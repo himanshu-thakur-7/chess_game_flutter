@@ -10,6 +10,7 @@ class AuthForm extends StatefulWidget {
     String? email,
     String? password,
     String? userName,
+    File? userImage,
     bool isLogin,
     BuildContext ctx,
   )? submitFn;
@@ -48,13 +49,14 @@ class _AuthFormState extends State<AuthForm> {
           backgroundColor: Theme.of(context).errorColor,
         ),
       );
+      return;
     }
 
     if (isValid == true) {
       _formKey.currentState?.save();
 
       widget.submitFn!(_userEmail!.trim(), _userPassword!.trim(),
-          _userName!.trim(), _isLogin, context);
+          _userName!.trim(), _userImageFile, _isLogin, context);
     }
   }
 
