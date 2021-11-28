@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "428896159247",
+    "project_id": "shatranj-6a9fb",
+    "storage_bucket": "shatranj-6a9fb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:428896159247:android:36a0518603fd52c777c57a",
+        "android_client_info": {
+          "package_name": "com.example.chess_ui"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "428896159247-3dpqbik1f0r11d065vtohojjno4g848s.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDqCiHWZ5MJvlrMZzvGSYbsqAstmKnMlXQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "428896159247-3dpqbik1f0r11d065vtohojjno4g848s.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
