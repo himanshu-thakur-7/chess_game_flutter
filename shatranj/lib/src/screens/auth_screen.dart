@@ -49,7 +49,9 @@ class _AuthScreenState extends State<AuthScreen> {
             .child('user_images')
             .child('${authResult.user?.uid}.jpg');
 
-        await ref.putFile(userImage!).whenComplete;
+        await ref
+            .putFile(userImage!)
+            .whenComplete(() => {print("image uploaded success!")});
 
         final url = await ref.getDownloadURL();
 
@@ -60,9 +62,10 @@ class _AuthScreenState extends State<AuthScreen> {
           'username': username,
           'email': email,
           'image_url': url,
-        });
+        }).then((value) => print("database updated"));
       }
     } on PlatformException catch (err) {
+      print("inside platform exception block");
       var message = "An error Occured, Please check your credentials";
 
       if (err.message != null) {
@@ -78,6 +81,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } catch (error) {
+      print("inside catch block");
       print(error);
 
       setState(() {

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../widgets/chess_board.dart';
 
 class ChessBoardScreen extends StatelessWidget {
+  var userOnDeviceID;
   final String? roomID;
-  const ChessBoardScreen({Key? key, this.roomID}) : super(key: key);
+  ChessBoardScreen({Key? key, this.roomID, this.userOnDeviceID})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -13,6 +15,7 @@ class ChessBoardScreen extends StatelessWidget {
       ),
       body: ChessBoardWidget(
         roomID: roomID,
+        userOnDeviceID: userOnDeviceID,
       ),
     );
   }

@@ -1,3 +1,7 @@
+import 'package:chess_ui/src/widgets/user_widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import '../widgets/timer_widget.dart';
 
 import '../screens/room_full_screen.dart';
@@ -14,10 +18,16 @@ bool isPlayerTurn = true;
 bool canJoin = true;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
+var opponentID = null;
 
 class ChessBoardWidget extends StatefulWidget {
   final String? roomID;
-  const ChessBoardWidget({Key? key, this.roomID}) : super(key: key);
+  var userOnDeviceID;
+  ChessBoardWidget({
+    Key? key,
+    this.roomID,
+    this.userOnDeviceID,
+  }) : super(key: key);
 
   @override
   _ChessBoardWidgetState createState() => _ChessBoardWidgetState();
@@ -28,6 +38,26 @@ IO.Socket socket = IO.io('/');
 
 class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   // final ChessBoardController _controller = ChessBoardController();
+
+  Widget buildUserWidget(String userID) {
+    return StreamBuilder(
+        stream: FirebaseFirestore.instance
+            .collection('users')
+            .doc(userID)
+            .snapshots(),
+        builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return const Text("Loading");
+          }
+          print(snapshot);
+          var userDocument = snapshot.data;
+          print(userDocument!.get("username"));
+          final username = userDocument.get("username");
+          final profilePicURL = userDocument.get("image_url");
+          return UserWidget(username: username, profilePicURL: profilePicURL);
+        });
+  }
+
   void connectToServer() {
     print('connecting to server...');
     try {
@@ -45,6 +75,15 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.on(
           'startGame',
           (playerOneID) => {
+                socket.emit('loadUser', widget.userOnDeviceID),
+                socket.on(
+                    'displayUser',
+                    (userID) => {
+                          setState(() {
+                            // get opponent userID stored in firebase
+                            opponentID = userID;
+                          })
+                        }),
                 print('playerOneID: $playerOneID'),
                 if (socket.id != playerOneID)
                   {
@@ -142,6 +181,12 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   //   key: _opponentKey,
                   //   isColorWhite: !isPlayerWhite,
                   // ),
+                  opponentID == null
+                      ? const UserWidget(
+                          username: "computer",
+                          profilePicURL:
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Circle-icons-computer.svg/1200px-Circle-icons-computer.svg.png")
+                      : buildUserWidget(opponentID),
                   const SizedBox(height: 10),
                   ChessBoard(
                     size: MediaQuery.of(context).size.height * 0.5,
@@ -188,7 +233,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   // TimerWidget(
                   //   key: _myKey,
                   //   isColorWhite: isPlayerWhite,
-                  // )
+                  // ),
+                  buildUserWidget(widget.userOnDeviceID),
                 ],
               ),
             ),

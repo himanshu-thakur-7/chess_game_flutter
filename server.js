@@ -7,6 +7,7 @@ var io = require('socket.io')(server);
 io.on('connection', function (socket) {
     // console.log(socket.id, 'joined');
 
+
     socket.on('playerReady', (roomID) => {
 
         console.log("Room ID:", roomID);
@@ -30,7 +31,10 @@ io.on('connection', function (socket) {
             socket.join(roomID);
             io.to(roomID).emit('startGame', socket.id);
         }
-
+        socket.on("loadUser", (userID) => {
+            console.log("User ID:", userID);
+            socket.to(roomID).emit('displayUser', userID);
+        })
 
         socket.on('moved', (data) => {
             console.log(data);
