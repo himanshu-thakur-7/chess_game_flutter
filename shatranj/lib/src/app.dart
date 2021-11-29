@@ -14,7 +14,9 @@ class App extends StatelessWidget {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
-        primarySwatch: Colors.indigo,
+        primaryColor: const Color.fromRGBO(34, 0, 53, 1.0),
+        buttonTheme: const ButtonThemeData(
+            buttonColor: Color.fromRGBO(155, 26, 228, 1.0)),
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
       // home: StreamBuilder(
@@ -24,6 +26,7 @@ class App extends StatelessWidget {
       //       print(userSnapshot.data!.uid);
 
       //       var userOnDeviceID = userSnapshot.data!.uid;
+
       //       return SplashScreen(userOnDeviceID: userOnDeviceID);
       //     }
       //     return const AuthScreen();
