@@ -1,4 +1,6 @@
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
+import 'package:chess_ui/src/screens/learn_chess_screen.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
@@ -16,6 +18,26 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var profilePicURL;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    final snapshots = FirebaseFirestore.instance
+        .collection('users')
+        .doc(widget.userOnDeviceID)
+        .snapshots();
+    print(snapshots.forEach((element) {
+      print(element.get("image_url"));
+
+      setState(() {
+        profilePicURL = element.get("image_url");
+      });
+    }));
+  }
+
   final TextEditingController _controller = TextEditingController();
   @override
   void dispose() {
@@ -44,7 +66,11 @@ class _HomeScreenState extends State<HomeScreen> {
                         Expanded(
                             child: Container(
                                 margin: const EdgeInsets.only(right: 120),
-                                child: const CircleAvatar())),
+                                child: CircleAvatar(
+                                  radius: 25,
+                                  backgroundImage: NetworkImage(profilePicURL ??
+                                      "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                                ))),
                         Expanded(
                           child: Container(
                             margin: const EdgeInsets.only(left: 120),
@@ -249,40 +275,49 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                   Expanded(
                                     flex: 2,
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      padding: const EdgeInsets.all(8),
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            0, 210, 211, 1.0),
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'Learn To Play',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
+                                    child: GestureDetector(
+                                      onTap: () => Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                              builder: (_) =>
+                                                  const LearnChessScreen())),
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        padding: const EdgeInsets.all(8),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              0, 210, 211, 1.0),
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Learn To Play',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
-                                          ),
-                                          Container(
-                                              margin: const EdgeInsets.fromLTRB(
-                                                  35, 16, 2, 2),
-                                              child: SvgPicture.asset(
-                                                'graphics/learnChess.svg',
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.28,
-                                              ))
-                                        ],
+                                            Container(
+                                                margin:
+                                                    const EdgeInsets.fromLTRB(
+                                                        35, 16, 2, 2),
+                                                child: SvgPicture.asset(
+                                                  'graphics/learnChess.svg',
+                                                  width: MediaQuery.of(context)
+                                                          .size
+                                                          .width *
+                                                      0.28,
+                                                ))
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
