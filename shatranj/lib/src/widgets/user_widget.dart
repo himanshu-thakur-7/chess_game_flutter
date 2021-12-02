@@ -17,7 +17,10 @@ class UserWidget extends StatelessWidget {
         const SizedBox(
           width: 10,
         ),
-        Text(username.toUpperCase()),
+        Text(
+          username.toUpperCase(),
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+        ),
       ],
     );
   }

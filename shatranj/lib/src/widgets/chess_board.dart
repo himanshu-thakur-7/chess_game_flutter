@@ -9,6 +9,7 @@ import '../screens/room_full_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_chess_board/flutter_chess_board.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
+import "../engine/logic.dart";
 
 GlobalKey<TimerWidgetState> _myKey = GlobalKey();
 GlobalKey<TimerWidgetState> _opponentKey = GlobalKey();
@@ -23,10 +24,12 @@ var opponentID = null;
 class ChessBoardWidget extends StatefulWidget {
   final String? roomID;
   var userOnDeviceID;
+  final bool comp;
   ChessBoardWidget({
     Key? key,
     this.roomID,
     this.userOnDeviceID,
+    required this.comp,
   }) : super(key: key);
 
   @override
@@ -47,7 +50,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             .snapshots(),
         builder: (context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (!snapshot.hasData) {
-            return const Text("Loading");
+            return const Text("Loading...");
           }
           print(snapshot);
           var userDocument = snapshot.data;
@@ -161,9 +164,18 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     super.initState();
     _controller = ChessBoardController();
 
-    connectToServer();
+    if (widget.comp == false) connectToServer();
 
     print("init state");
+  }
+
+  getMoveFromEngine() async {
+    String move = await getEngineMove(_controller.getFen());
+
+    setState(() {
+      isPlayerTurn = true;
+      _controller.makeMoveWithNormalNotation(move);
+    });
   }
 
   @override
@@ -181,11 +193,11 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   //   key: _opponentKey,
                   //   isColorWhite: !isPlayerWhite,
                   // ),
-                  opponentID == null
+                  widget.comp
                       ? const UserWidget(
                           username: "computer",
                           profilePicURL:
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Circle-icons-computer.svg/1200px-Circle-icons-computer.svg.png")
+                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
                       : buildUserWidget(opponentID),
                   const SizedBox(height: 10),
                   ChessBoard(
@@ -193,40 +205,52 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                     enableUserMoves: isPlayerTurn,
                     boardOrientation:
                         isPlayerWhite ? PlayerColor.white : PlayerColor.black,
-                    boardColor: BoardColor.orange,
+                    boardColor: BoardColor.darkBrown,
                     controller: _controller,
                     onMove: () {
                       // stop the timer of the player who made the move and start the timer of the other player
                       // _myKey.currentState?.stopTimer();
                       // _opponentKey.currentState?.startTimer();
 
-                      String currPGN = "";
-                      for (String? s in _controller.getSan()) {
-                        currPGN += (s ?? "") + " ";
-                      }
-                      print(currPGN);
+                      if (!widget.comp) {
+                        String currPGN = "";
+                        for (String? s in _controller.getSan()) {
+                          currPGN += (s ?? "") + " ";
+                        }
+                        print(currPGN);
 
-                      socket.emit('moved', currPGN);
+                        socket.emit('moved', currPGN);
 
-                      // check if the player is in checkmate
-                      if (_controller.isCheckMate()) {
-                        socket.emit("checkmate", {'checkmate ho gya hai bhai'});
-                      }
-                      // check stalemate
-                      else if (_controller.isStaleMate()) {
-                        socket.emit("stalemate", {'stalemate ho gya hai bhai'});
-                      }
-                      // check draw
-                      else if (_controller.isDraw() ||
-                          _controller.isInsufficientMaterial() ||
-                          _controller.isThreefoldRepetition()) {
-                        socket.emit("draw", {'draw ho gya hai bhai'});
-                      }
+                        // check if the player is in checkmate
+                        if (_controller.isCheckMate()) {
+                          socket
+                              .emit("checkmate", {'checkmate ho gya hai bhai'});
+                        }
+                        // check stalemate
+                        else if (_controller.isStaleMate()) {
+                          socket
+                              .emit("stalemate", {'stalemate ho gya hai bhai'});
+                        }
+                        // check draw
+                        else if (_controller.isDraw() ||
+                            _controller.isInsufficientMaterial() ||
+                            _controller.isThreefoldRepetition()) {
+                          socket.emit("draw", {'draw ho gya hai bhai'});
+                        }
 
-                      // if the player has made a move, then it is not their turn anymore
-                      setState(() {
-                        isPlayerTurn = false;
-                      });
+                        // if the player has made a move, then it is not their turn anymore
+                        setState(() {
+                          isPlayerTurn = false;
+                        });
+                      } else {
+                        setState(() {
+                          isPlayerTurn = false;
+                        });
+                        getMoveFromEngine();
+                        // getEngineMove(_controller.getFen());
+                        // TODO: Set up engine move functionality
+
+                      }
                     },
                   ),
                   const SizedBox(height: 10),

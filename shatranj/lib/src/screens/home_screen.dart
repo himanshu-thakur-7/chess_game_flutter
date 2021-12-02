@@ -1,5 +1,6 @@
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
 import 'package:chess_ui/src/screens/learn_chess_screen.dart';
+import 'package:chess_ui/src/screens/puzzles_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
@@ -19,6 +20,7 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   var profilePicURL;
+  var userName;
 
   @override
   void initState() {
@@ -34,6 +36,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
       setState(() {
         profilePicURL = element.get("image_url");
+        userName = element.get("username");
       });
     }));
   }
@@ -64,14 +67,33 @@ class _HomeScreenState extends State<HomeScreen> {
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
                         Expanded(
+                            flex: 4,
                             child: Container(
-                                margin: const EdgeInsets.only(right: 120),
-                                child: CircleAvatar(
-                                  radius: 25,
-                                  backgroundImage: NetworkImage(profilePicURL ??
-                                      "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                                margin: const EdgeInsets.only(right: 0),
+                                child: Row(
+                                  children: [
+                                    CircleAvatar(
+                                      radius: 25,
+                                      backgroundImage: NetworkImage(profilePicURL ??
+                                          "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                                    ),
+                                    Container(
+                                      margin: EdgeInsets.only(left: 10),
+                                      child: FittedBox(
+                                        fit: BoxFit.contain,
+                                        child: Text(
+                                          "Hi ${userName ?? ""}!",
+                                          style: const TextStyle(
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.green),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
                                 ))),
                         Expanded(
+                          flex: 3,
                           child: Container(
                             margin: const EdgeInsets.only(left: 120),
                             child: IconButton(
@@ -114,21 +136,37 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.only(
                                       top: 8.0,
                                     ),
-                                    child: ElevatedButton(
-                                        style: ButtonStyle(
-                                          backgroundColor:
-                                              MaterialStateProperty.all(
-                                            const Color.fromRGBO(
-                                                155, 26, 228, 1.0),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        print("hi");
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    PuzzleScreen()));
+                                      },
+                                      child: ElevatedButton(
+                                          style: ButtonStyle(
+                                            backgroundColor:
+                                                MaterialStateProperty.all(
+                                              const Color.fromRGBO(
+                                                  155, 26, 228, 1.0),
+                                            ),
                                           ),
-                                        ),
-                                        onPressed: () => {print('puzzles')},
-                                        child: const Text(
-                                          'Puzzles',
-                                          style: TextStyle(
-                                              fontSize: 15,
-                                              fontWeight: FontWeight.bold),
-                                        )),
+                                          onPressed: () => {
+                                                print("puzzle screen"),
+                                                Navigator.of(context).push(
+                                                    MaterialPageRoute(
+                                                        builder: (context) =>
+                                                            const PuzzleScreen()))
+                                              },
+                                          child: const Text(
+                                            'Puzzles',
+                                            style: TextStyle(
+                                                fontSize: 15,
+                                                fontWeight: FontWeight.bold),
+                                          )),
+                                    ),
                                   )
                                 ]),
                           ],
@@ -149,81 +187,115 @@ class _HomeScreenState extends State<HomeScreen> {
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.all(8),
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            155, 26, 228, 1.0),
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'Play Vs Robot',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600),
-                                          ),
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                35, 16, 2, 2),
-                                            child: Image.asset(
-                                              "graphics/play_ai.png",
-                                              fit: BoxFit.contain,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.28,
+                                    child: InkWell(
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ChessBoardScreen(
+                                              comp: true,
+                                              roomID: null,
+                                              userOnDeviceID:
+                                                  widget.userOnDeviceID,
                                             ),
-                                          )
-                                        ],
+                                          ),
+                                        );
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.all(8),
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              155, 26, 228, 1.0),
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Play Vs Robot',
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 16,
+                                                  fontWeight: FontWeight.w600),
+                                            ),
+                                            Container(
+                                              margin: const EdgeInsets.fromLTRB(
+                                                  35, 16, 2, 2),
+                                              child: Image.asset(
+                                                "graphics/play_ai.png",
+                                                fit: BoxFit.contain,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.28,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),
                                   Expanded(
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            0, 210, 211, 1.0),
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      padding: const EdgeInsets.all(8.0),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'Play Vs Friend',
-                                            style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w600,
+                                    child: GestureDetector(
+                                      onTap: () => {
+                                        Navigator.of(context).push(
+                                          MaterialPageRoute(
+                                            builder: (context) =>
+                                                ChessBoardScreen(
+                                              comp: false,
+                                              roomID: null,
+                                              userOnDeviceID:
+                                                  widget.userOnDeviceID,
                                             ),
                                           ),
-                                          Container(
-                                            margin: const EdgeInsets.fromLTRB(
-                                                35, 16, 2, 2),
-                                            child: Image.asset(
-                                              "graphics/play_friend.png",
-                                              fit: BoxFit.contain,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.28,
+                                        )
+                                      },
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              0, 210, 211, 1.0),
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        padding: const EdgeInsets.all(8.0),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Play Vs Friend',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.w600,
+                                              ),
                                             ),
-                                          )
-                                        ],
+                                            Container(
+                                              margin: const EdgeInsets.fromLTRB(
+                                                  35, 16, 2, 2),
+                                              child: Image.asset(
+                                                "graphics/play_friend.png",
+                                                fit: BoxFit.contain,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.28,
+                                              ),
+                                            )
+                                          ],
+                                        ),
                                       ),
                                     ),
                                   ),

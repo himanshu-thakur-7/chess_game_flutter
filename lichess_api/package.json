@@ -1,0 +1,17 @@
+{
+  "name": "lichess_api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.cjs",
+  "type": "commonjs",
+  "scripts": {
+    "start": "nodemon index.cjs"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^10.0.0",
+    "node-fetch": "^2.1.0",
+    "nodemon": "^2.0.15"
+  }
+}

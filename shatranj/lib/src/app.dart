@@ -1,3 +1,4 @@
+import './screens/puzzles_screen.dart';
 import 'package:flutter/services.dart';
 
 import './screens/learn_chess_screen.dart';
@@ -14,14 +15,15 @@ class App extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    SystemChrome.setPreferredOrientations([
-      DeviceOrientation.portraitUp,
-      DeviceOrientation.portraitDown,
-    ]);
+    // SystemChrome.setPreferredOrientations([
+    //   DeviceOrientation.portraitUp,
+    //   DeviceOrientation.portraitDown,
+    // ]);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           primaryColor: const Color.fromRGBO(34, 0, 53, 1.0),
+          accentColor: const Color.fromRGBO(251, 209, 76, 1.0),
           buttonTheme: const ButtonThemeData(
               buttonColor: Color.fromRGBO(155, 26, 228, 1.0)),
           visualDensity: VisualDensity.adaptivePlatformDensity,
@@ -39,7 +41,7 @@ class App extends StatelessWidget {
             return const AuthScreen();
           },
         )
-        // home: LearnChessScreen(),
+        // home: PuzzleScreen(),
         );
   }
 }
