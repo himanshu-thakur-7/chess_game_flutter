@@ -193,7 +193,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   //   key: _opponentKey,
                   //   isColorWhite: !isPlayerWhite,
                   // ),
-                  widget.comp
+                  opponentID == null
                       ? const UserWidget(
                           username: "computer",
                           profilePicURL:

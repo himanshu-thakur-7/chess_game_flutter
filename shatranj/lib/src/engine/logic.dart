@@ -14,7 +14,8 @@ Future<String> getEngineMove(String? fen) async {
     print(san);
     return san;
   }
-  return "";
+  return game!.toSan(game!.makeRandomMove());
+  // return game!.toSan(bishop.r);
 }
 
 String formatResult(bishop.EngineResult res) {

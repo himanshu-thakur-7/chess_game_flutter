@@ -1,10 +1,13 @@
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
 import 'package:chess_ui/src/screens/learn_chess_screen.dart';
 import 'package:chess_ui/src/screens/puzzles_screen.dart';
+import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+
+TextEditingController _controller = TextEditingController();
 
 class HomeScreen extends StatefulWidget {
   var userOnDeviceID;
@@ -22,6 +25,7 @@ class _HomeScreenState extends State<HomeScreen> {
   var profilePicURL;
   var userName;
 
+  var roomID;
   @override
   void initState() {
     // TODO: implement initState
@@ -52,8 +56,11 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        backgroundColor: Theme.of(context).primaryColor,
-        body: SafeArea(
+      resizeToAvoidBottomInset: false,
+      backgroundColor: Theme.of(context).primaryColor,
+      body: SafeArea(
+        child: SingleChildScrollView(
+          physics: const NeverScrollableScrollPhysics(),
           child: Stack(
             children: [
               Container(
@@ -245,14 +252,73 @@ class _HomeScreenState extends State<HomeScreen> {
                                   Expanded(
                                     child: GestureDetector(
                                       onTap: () => {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ChessBoardScreen(
-                                              comp: false,
-                                              roomID: null,
-                                              userOnDeviceID:
-                                                  widget.userOnDeviceID,
+                                        // Navigator.of(context).push(
+                                        //   MaterialPageRoute(
+                                        //     builder: (context) =>
+                                        //         ChessBoardScreen(
+                                        //       comp: false,
+                                        //       roomID: null,
+                                        //       userOnDeviceID:
+                                        //           widget.userOnDeviceID,
+                                        //     ),
+                                        //   ),
+                                        // )
+                                        showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              Dialog(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(
+                                                        12.0)), //this right here
+                                            child: Container(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 20.0,
+                                                      horizontal: 10.0),
+                                              decoration: const BoxDecoration(
+                                                  color: Colors.amberAccent),
+                                              height: 300.0,
+                                              width: 300.0,
+                                              child: Column(
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  TextField(
+                                                    controller: _controller,
+                                                    keyboardType:
+                                                        TextInputType.name,
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      labelText:
+                                                          'Enter Room ID',
+                                                    ),
+                                                  ),
+                                                  ElevatedButton(
+                                                      child: const Text(
+                                                          'Join room'),
+                                                      onPressed: () => {
+                                                            print(
+                                                                "room ID : ${_controller.text}"),
+                                                            Navigator.of(
+                                                                    context)
+                                                                .push(
+                                                              MaterialPageRoute(
+                                                                builder:
+                                                                    (context) =>
+                                                                        ChessBoardScreen(
+                                                                  comp: false,
+                                                                  roomID:
+                                                                      _controller
+                                                                          .text,
+                                                                  userOnDeviceID:
+                                                                      widget
+                                                                          .userOnDeviceID,
+                                                                ),
+                                                              ),
+                                                            ),
+                                                          })
+                                                ],
+                                              ),
                                             ),
                                           ),
                                         )
@@ -436,7 +502,9 @@ class _HomeScreenState extends State<HomeScreen> {
               )
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 }
 //   return Scaffold(
@@ -466,3 +534,4 @@ class _HomeScreenState extends State<HomeScreen> {
 //     child: const Icon(Icons.arrow_forward),
 //   ),
 // );
+

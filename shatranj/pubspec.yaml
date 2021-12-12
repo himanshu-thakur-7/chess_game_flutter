@@ -35,12 +35,14 @@ dependencies:
   firebase_storage: ^10.1.0
   flutter:
     sdk: flutter
+  flutter_bloc: ^8.0.0
   flutter_chess_board: ^1.0.0+3
-  flutter_svg: ^0.23.0+1
+  # flutter_svg: ^0.23.0+1
   http: ^0.13.4
   image_picker: ^0.8.4+4
   path: ^1.8.0
   socket_io_client: ^1.0.2
+  squares: ^0.2.3
   youtube_player_flutter: ^8.0.0
 
 dev_dependencies:
