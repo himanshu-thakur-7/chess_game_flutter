@@ -42,12 +42,12 @@ io.on('connection', function (socket) {
         });
         socket.on("checkmate", (data) => {
             console.log(data);
-            io.to(roomID).emit("Checkmate", "Checkmated bro!!");
+            socket.to(roomID).emit("Checkmate", "Checkmated bro!!");
         });
 
         socket.on("draw", (data) => {
             console.log(data);
-            io.to(roomID).emit("Draw", "Draw bro!!");
+            io.to(roomID).emit("Draw", data);
         });
         socket.on("stalemate", (data) => {
             console.log(data);

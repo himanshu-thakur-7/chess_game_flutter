@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../widgets/dashboard_widget.dart';
 
-
 class HomeScreen extends StatefulWidget {
   var userOnDeviceID;
   // var profilePic;
@@ -226,6 +225,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       TextInputType.name,
                                                   decoration:
                                                       const InputDecoration(
+                                                    focusColor: Color.fromRGBO(
+                                                        34, 0, 53, 1.0),
                                                     labelText: 'Enter Room ID',
                                                   ),
                                                 ),
@@ -250,7 +251,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ),
                                               ),
                                             );
-                                            _controller.clear();
+                                            // _controller.clear();
                                           },
                                         ).show();
                                       },
@@ -367,4 +368,3 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-

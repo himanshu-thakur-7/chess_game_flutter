@@ -8,6 +8,7 @@ class ChessBoard2 extends StatefulWidget {
   final GameController gc = GameController();
   final int boardOrientation;
   final Function onMove;
+  final Function showDialog;
   final bool? vsComp;
   final GlobalKey chessKey;
   ChessBoard2({
@@ -15,6 +16,7 @@ class ChessBoard2 extends StatefulWidget {
     required GameController? gc,
     required this.boardOrientation,
     required this.onMove,
+    required this.showDialog,
     // this.canMove,
     this.vsComp,
     required this.chessKey,
@@ -102,7 +104,8 @@ class ChessBoard2State extends State<ChessBoard2> {
                       onMove: onMove,
                       moves: state.moves,
                       // canMove: widget.vsComp! ? state.canMove : widget.canMove!,
-                      canMove: canMove ?? false,
+                      // canMove: canMove ?? false,
+                      canMove: true,
                       draggable: false,
                     ),
                   );
@@ -130,6 +133,9 @@ class ChessBoard2State extends State<ChessBoard2> {
     else {
       canMove = false;
       setState(() {});
+    }
+    if (widget.gc.isCheckmate()) {
+      widget.showDialog();
     }
     // widget.gc.isCheckmate() ? print("checkmate!") : print("game on");
   }

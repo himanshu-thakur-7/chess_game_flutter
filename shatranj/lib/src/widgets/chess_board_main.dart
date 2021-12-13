@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/game_controller.dart';
 import 'package:chess_ui/src/widgets/user_widget.dart';
@@ -149,31 +150,57 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       });
       // checkmate event handler
       socket.on("Checkmate", (data) {
+        print("checkmate event");
         print(data);
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('Checkmate'),
-        ));
+        AwesomeDialog(
+          width: MediaQuery.of(context).size.width,
+          context: context,
+          dialogType: DialogType.ERROR,
+          animType: AnimType.RIGHSLIDE,
+          headerAnimationLoop: true,
+          title: 'You Lose!!',
+          desc: '',
+          btnOkOnPress: () {},
+          btnOkIcon: Icons.cancel,
+          btnOkColor: Colors.red,
+          dismissOnTouchOutside: false,
+        ).show();
         socket.emit("Roger", {'Checkmate'});
       });
       // // stalemate event handler
-      // socket.on("Stalemate", (data) {
-      //   print(data);
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text('Stalemate'),
-      //   ));
-      //   socket.emit("Roger", {'Stalemate'});
-      // });
+      socket.on("Stalemate", (data) {
+        AwesomeDialog(
+                context: context,
+                dialogType: DialogType.INFO,
+                headerAnimationLoop: true,
+                animType: AnimType.BOTTOMSLIDE,
+                showCloseIcon: true,
+                title: 'Stalemate!',
+                desc: 'Either Player unable to make valid move.',
+                btnCancelOnPress: () {},
+                onDissmissCallback: (type) {
+                  debugPrint('Dialog Dissmiss from callback $type');
+                },
+                btnOkOnPress: () {})
+            .show();
+        socket.emit("Roger", {'Stalemate'});
+      });
       // // draw event handler
-      // socket.on("Draw", (data) {
-      //   print(data);
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text('Draw'),
-      //   ));
-      //   setState(() {
-      //     isPlayerTurn = false;
-      //   });
-      //   socket.emit("Roger", {'Draw'});
-      // });
+      socket.on("Draw", (data) {
+        AwesomeDialog(
+                context: context,
+                dialogType: DialogType.WARNING,
+                headerAnimationLoop: true,
+                animType: AnimType.TOPSLIDE,
+                showCloseIcon: true,
+                title: 'Draw!',
+                desc: data,
+                btnCancelOnPress: () {},
+                btnOkOnPress: () {})
+            .show();
+
+        socket.emit("Roger", {'Draw'});
+      });
     } catch (e) {
       print(e.toString());
     }
@@ -221,20 +248,45 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.emit("checkmate", {'checkmate ho gya hai bhai'});
     }
     // // check stalemate
-    // else if (_controller.isStalemate()) {
-    //   socket.emit("stalemate", {'stalemate ho gya hai bhai'});
-    // }
+    else if (_controller.isStalemate()) {
+      socket.emit("stalemate", {'stalemate ho gya hai bhai'});
+    }
     // // check draw
-    // else if (_controller.isDraw() ||
-    //     _controller.isInsuffMaterial() ||
-    //     _controller.isThreeFoldRep()) {
-    //   socket.emit("draw", {'draw ho gya hai bhai'});
-    // }
+    else if (_controller.isDraw() ||
+        _controller.isInsuffMaterial() ||
+        _controller.isThreeFoldRep()) {
+      var reason = "";
+
+      if (_controller.isInsuffMaterial()) {
+        reason = "Insufficient Material";
+      } else if (_controller.isThreeFoldRep()) {
+        reason = "By Threefold Repition";
+      }
+
+      socket.emit("draw", reason);
+    }
     // setState(() {
     //   isPlayerTurn = false;
     // });
 
     // print("from the parent screen");
+  }
+
+  informUser() {
+    AwesomeDialog(
+      context: context,
+      animType: AnimType.LEFTSLIDE,
+      headerAnimationLoop: true,
+      dialogType: DialogType.SUCCES,
+      showCloseIcon: true,
+      title: 'You Win!!',
+      desc: '',
+      btnOkOnPress: () {
+        debugPrint('OnClcik');
+      },
+      btnOkIcon: Icons.check_circle,
+      dismissOnTouchOutside: false,
+    ).show();
   }
 
   @override
@@ -314,6 +366,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   //   },
                   // ),
                   ChessBoard2(
+                    showDialog: informUser,
                     chessKey: ck,
                     boardOrientation: isPlayerWhite ? WHITE : BLACK,
                     gc: _controller,

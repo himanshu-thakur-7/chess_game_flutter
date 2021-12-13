@@ -204,10 +204,10 @@ class GameController extends Cubit<GameState> {
           data["checkSq"] != null ? size.squareNumber(data["checkSq"]!) : null,
     );
     // bs = board;
-    PlayState state = game!.gameOver
-        ? PlayState.finished
-        : (canMove ? PlayState.ourTurn : PlayState.theirTurn);
-    // PlayState state = PlayState.ourTurn;
+    // PlayState state = game!.gameOver
+    //     ? PlayState.finished
+    //     : (canMove ? PlayState.ourTurn : PlayState.theirTurn);
+    PlayState state = PlayState.ourTurn;
     print("Whose turn ? $state");
     gs = GameState(
       state: state,
@@ -243,33 +243,33 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
-  // bool isDraw() {
-  //   if (game!.inDraw) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool isDraw() {
+    if (game!.inDraw) {
+      return true;
+    }
+    return false;
+  }
 
-  // bool isThreeFoldRep() {
-  //   if (game!.repetition) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool isThreeFoldRep() {
+    if (game!.repetition) {
+      return true;
+    }
+    return false;
+  }
 
-  // bool isInsuffMaterial() {
-  //   if (game!.insufficientMaterial) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool isInsuffMaterial() {
+    if (game!.insufficientMaterial) {
+      return true;
+    }
+    return false;
+  }
 
-  // bool isStalemate() {
-  //   if (game!.stalemate) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool isStalemate() {
+    if (game!.stalemate) {
+      return true;
+    }
+    return false;
+  }
 
   // void randomMove() {
   //   if (game == null || game!.gameOver) return;
