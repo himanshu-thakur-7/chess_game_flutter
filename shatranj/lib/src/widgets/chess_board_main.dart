@@ -4,6 +4,7 @@ import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/game_controller.dart';
 import 'package:chess_ui/src/widgets/user_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_bloc/flutter_bloc.dart' as bloc;
 // import 'package:firebase_auth/firebase_auth.dart';
 import 'package:squares/squares.dart';
@@ -155,6 +156,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         print("checkmate event");
         print(data);
 
+//  update stats in data base
+
         informUser(
             message: 'You Lose!',
             dialogueType: DialogType.ERROR,
@@ -174,6 +177,17 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         //   btnOkColor: Colors.red,
         //   dismissOnTouchOutside: false,
         // ).show();
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc("${widget.userOnDeviceID}")
+            .update({
+          "losses": FieldValue.increment(1),
+          "total": FieldValue.increment(1),
+        }).then(
+          (_) => {
+            print("stats updated!"),
+          },
+        );
         socket.emit("Roger", {'Checkmate'});
       });
       // // stalemate event handler
@@ -195,6 +209,17 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         //         btnOkOnPress: () {})
         //     .show();
         // socket.emit("Roger", {'Stalemate'});
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc("${widget.userOnDeviceID}")
+            .update({
+          "draws": FieldValue.increment(1),
+          "total": FieldValue.increment(1),
+        }).then(
+          (_) => {
+            print("stats updated!"),
+          },
+        );
       });
       // // draw event handler
       socket.on("Draw", (data) {
@@ -214,7 +239,17 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         //         btnCancelOnPress: () {},
         //         btnOkOnPress: () {})
         //     .show();
-
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc("${widget.userOnDeviceID}")
+            .update({
+          "draws": FieldValue.increment(1),
+          "total": FieldValue.increment(1),
+        }).then(
+          (_) => {
+            print("stats updated!"),
+          },
+        );
         socket.emit("Roger", {'Draw'});
       });
     } catch (e) {
@@ -394,6 +429,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   //   },
                   // ),
                   ChessBoard2(
+                    userOnDeviceID: widget.userOnDeviceID,
                     showDialog: informUser,
                     chessKey: ck,
                     boardOrientation: isPlayerWhite ? WHITE : BLACK,

@@ -61,7 +61,7 @@ class StatsPieChartState extends State<StatsPieChart> {
                               sections: showingSections(
                                   wins: widget.wins,
                                   losses: widget.losses,
-                                  draws: widget.losses,
+                                  draws: widget.draws,
                                   total: widget.total)),
                         ),
                       ),

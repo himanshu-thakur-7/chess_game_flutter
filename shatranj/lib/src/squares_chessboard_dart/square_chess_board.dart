@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 // import 'package:bishop/bishop.dart' as bishop;
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,6 +14,7 @@ class ChessBoard2 extends StatefulWidget {
   final bool? vsComp;
   final GlobalKey chessKey;
   bool canMove;
+  final userOnDeviceID;
   ChessBoard2({
     Key? key,
     required GameController? gc,
@@ -21,6 +23,7 @@ class ChessBoard2 extends StatefulWidget {
     required this.showDialog,
     required this.canMove,
     this.vsComp,
+    this.userOnDeviceID,
     required this.chessKey,
   }) : super(key: key);
 
@@ -65,7 +68,7 @@ class ChessBoard2State extends State<ChessBoard2> {
           children: [
             // if (variant.hands) _hand(gc, BLACK),
             Padding(
-              padding: EdgeInsets.all(16.0),
+              padding: const EdgeInsets.all(16.0),
               child: BlocBuilder<GameController, GameState>(
                 bloc: widget.gc,
                 builder: (context, state) {
@@ -128,6 +131,20 @@ class ChessBoard2State extends State<ChessBoard2> {
       setState(() {});
     }
     if (widget.gc.isCheckmate()) {
+      if (widget.vsComp! == false) {
+        FirebaseFirestore.instance
+            .collection("users")
+            .doc("${widget.userOnDeviceID}")
+            .update({
+          "wins": FieldValue.increment(1),
+          "total": FieldValue.increment(1),
+        }).then(
+          (_) => {
+            print("stats updated!"),
+          },
+        );
+      }
+
       setState(() {
         widget.canMove = false;
       });
