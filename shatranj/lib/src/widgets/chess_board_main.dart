@@ -148,13 +148,13 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         // });
       });
       // checkmate event handler
-      // socket.on("Checkmate", (data) {
-      //   print(data);
-      //   ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-      //     content: Text('Checkmate'),
-      //   ));
-      //   socket.emit("Roger", {'Checkmate'});
-      // });
+      socket.on("Checkmate", (data) {
+        print(data);
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('Checkmate'),
+        ));
+        socket.emit("Roger", {'Checkmate'});
+      });
       // // stalemate event handler
       // socket.on("Stalemate", (data) {
       //   print(data);
@@ -217,9 +217,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     // socket.emit('moved', _controller.getFen());
 
     // check if the player is in checkmate
-    // if (_controller.isCheckmate()) {
-    //   socket.emit("checkmate", {'checkmate ho gya hai bhai'});
-    // }
+    if (_controller.isCheckmate()) {
+      socket.emit("checkmate", {'checkmate ho gya hai bhai'});
+    }
     // // check stalemate
     // else if (_controller.isStalemate()) {
     //   socket.emit("stalemate", {'stalemate ho gya hai bhai'});

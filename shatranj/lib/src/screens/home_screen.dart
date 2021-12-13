@@ -1,13 +1,10 @@
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
 import 'package:chess_ui/src/screens/learn_chess_screen.dart';
-import 'package:chess_ui/src/screens/puzzles_screen.dart';
-import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/painting.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:awesome_dialog/awesome_dialog.dart';
+import '../widgets/dashboard_widget.dart';
 
-TextEditingController _controller = TextEditingController();
 
 class HomeScreen extends StatefulWidget {
   var userOnDeviceID;
@@ -143,37 +140,23 @@ class _HomeScreenState extends State<HomeScreen> {
                                     padding: const EdgeInsets.only(
                                       top: 8.0,
                                     ),
-                                    child: GestureDetector(
-                                      onTap: () {
-                                        print("hi");
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (context) =>
-                                                    PuzzleScreen()));
-                                      },
-                                      child: ElevatedButton(
-                                          style: ButtonStyle(
-                                            backgroundColor:
-                                                MaterialStateProperty.all(
-                                              const Color.fromRGBO(
-                                                  155, 26, 228, 1.0),
-                                            ),
+                                    child: ElevatedButton(
+                                        style: ButtonStyle(
+                                          backgroundColor:
+                                              MaterialStateProperty.all(
+                                            const Color.fromRGBO(
+                                                155, 26, 228, 1.0),
                                           ),
-                                          onPressed: () => {
-                                                print("puzzle screen"),
-                                                Navigator.of(context).push(
-                                                    MaterialPageRoute(
-                                                        builder: (context) =>
-                                                            const PuzzleScreen()))
-                                              },
-                                          child: const Text(
-                                            'Puzzles',
-                                            style: TextStyle(
-                                                fontSize: 15,
-                                                fontWeight: FontWeight.bold),
-                                          )),
-                                    ),
+                                        ),
+                                        onPressed: () => {
+                                              print("puzzle screen"),
+                                            },
+                                        child: const Text(
+                                          "Let's go",
+                                          style: TextStyle(
+                                              fontSize: 15,
+                                              fontWeight: FontWeight.bold),
+                                        )),
                                   )
                                 ]),
                           ],
@@ -193,178 +176,88 @@ class _HomeScreenState extends State<HomeScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.center,
                                 mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
-                                  Expanded(
-                                    child: InkWell(
+                                  DashboardWidget(
+                                    imgScale: 0.28,
+                                    flexVal: 1,
+                                    widget: widget,
+                                    onTap: () {
+                                      Navigator.of(context).push(
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              ChessBoardScreen(
+                                            comp: true,
+                                            roomID: null,
+                                            userOnDeviceID:
+                                                widget.userOnDeviceID,
+                                          ),
+                                        ),
+                                      );
+                                    },
+                                    backColor:
+                                        const Color.fromRGBO(155, 26, 228, 1.0),
+                                    imgURL: "graphics/play_ai.png",
+                                    title: "Play vs Robot",
+                                  ),
+                                  DashboardWidget(
+                                      imgScale: 0.28,
+                                      flexVal: 1,
+                                      widget: widget,
                                       onTap: () {
-                                        Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                            builder: (context) =>
-                                                ChessBoardScreen(
-                                              comp: true,
-                                              roomID: null,
-                                              userOnDeviceID:
-                                                  widget.userOnDeviceID,
-                                            ),
-                                          ),
-                                        );
-                                      },
-                                      child: Container(
-                                        padding: const EdgeInsets.all(8),
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromRGBO(
-                                              155, 26, 228, 1.0),
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(18),
-                                        ),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Play Vs Robot',
-                                              style: TextStyle(
-                                                  color: Colors.white,
-                                                  fontSize: 16,
-                                                  fontWeight: FontWeight.w600),
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.fromLTRB(
-                                                  35, 16, 2, 2),
-                                              child: Image.asset(
-                                                "graphics/play_ai.png",
-                                                fit: BoxFit.contain,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.28,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    child: GestureDetector(
-                                      onTap: () => {
-                                        // Navigator.of(context).push(
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) =>
-                                        //         ChessBoardScreen(
-                                        //       comp: false,
-                                        //       roomID: null,
-                                        //       userOnDeviceID:
-                                        //           widget.userOnDeviceID,
-                                        //     ),
-                                        //   ),
-                                        // )
-                                        showDialog(
+                                        AwesomeDialog(
+                                          dismissOnTouchOutside: false,
                                           context: context,
-                                          builder: (BuildContext context) =>
-                                              Dialog(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        12.0)), //this right here
-                                            child: Container(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      vertical: 20.0,
-                                                      horizontal: 10.0),
-                                              decoration: const BoxDecoration(
-                                                  color: Colors.amberAccent),
-                                              height: 300.0,
-                                              width: 300.0,
-                                              child: Column(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  TextField(
-                                                    controller: _controller,
-                                                    keyboardType:
-                                                        TextInputType.name,
-                                                    decoration:
-                                                        const InputDecoration(
-                                                      labelText:
-                                                          'Enter Room ID',
-                                                    ),
+                                          dialogType: DialogType.INFO_REVERSED,
+                                          borderSide: const BorderSide(
+                                              color: Colors.green, width: 2),
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          buttonsBorderRadius:
+                                              const BorderRadius.all(
+                                                  Radius.circular(2)),
+                                          headerAnimationLoop: false,
+                                          animType: AnimType.BOTTOMSLIDE,
+                                          body: Center(
+                                            child: Column(
+                                              mainAxisSize: MainAxisSize.min,
+                                              children: [
+                                                TextField(
+                                                  controller: _controller,
+                                                  keyboardType:
+                                                      TextInputType.name,
+                                                  decoration:
+                                                      const InputDecoration(
+                                                    labelText: 'Enter Room ID',
                                                   ),
-                                                  ElevatedButton(
-                                                      child: const Text(
-                                                          'Join room'),
-                                                      onPressed: () => {
-                                                            print(
-                                                                "room ID : ${_controller.text}"),
-                                                            Navigator.of(
-                                                                    context)
-                                                                .push(
-                                                              MaterialPageRoute(
-                                                                builder:
-                                                                    (context) =>
-                                                                        ChessBoardScreen(
-                                                                  comp: false,
-                                                                  roomID:
-                                                                      _controller
-                                                                          .text,
-                                                                  userOnDeviceID:
-                                                                      widget
-                                                                          .userOnDeviceID,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          })
-                                                ],
-                                              ),
+                                                ),
+                                              ],
                                             ),
                                           ),
-                                        )
+                                          showCloseIcon: true,
+                                          btnCancelOnPress: () {},
+                                          btnOkText: 'Join',
+                                          btnOkOnPress: () {
+                                            print(
+                                                "room ID : ${_controller.text}");
+
+                                            Navigator.of(context).push(
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    ChessBoardScreen(
+                                                  comp: false,
+                                                  roomID: _controller.text,
+                                                  userOnDeviceID:
+                                                      widget.userOnDeviceID,
+                                                ),
+                                              ),
+                                            );
+                                            _controller.clear();
+                                          },
+                                        ).show();
                                       },
-                                      child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 8),
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromRGBO(
-                                              0, 210, 211, 1.0),
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(18),
-                                        ),
-                                        padding: const EdgeInsets.all(8.0),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Play Vs Friend',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            Container(
-                                              margin: const EdgeInsets.fromLTRB(
-                                                  35, 16, 2, 2),
-                                              child: Image.asset(
-                                                "graphics/play_friend.png",
-                                                fit: BoxFit.contain,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width *
-                                                    0.28,
-                                              ),
-                                            )
-                                          ],
-                                        ),
-                                      ),
-                                    ),
-                                  ),
+                                      backColor: const Color.fromRGBO(
+                                          0, 210, 211, 1.0),
+                                      imgURL: "graphics/play_friend.png",
+                                      title: "Play vs Friend")
                                 ],
                               ),
                             ),
@@ -411,53 +304,20 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                   ),
-                                  Expanded(
-                                    flex: 2,
-                                    child: GestureDetector(
-                                      onTap: () => Navigator.of(context).push(
+                                  DashboardWidget(
+                                    widget: widget,
+                                    onTap: () {
+                                      Navigator.of(context).push(
                                           MaterialPageRoute(
                                               builder: (_) =>
-                                                  const LearnChessScreen())),
-                                      child: Container(
-                                        margin: const EdgeInsets.symmetric(
-                                            vertical: 8.0),
-                                        padding: const EdgeInsets.all(8),
-                                        decoration: BoxDecoration(
-                                          color: const Color.fromRGBO(
-                                              0, 210, 211, 1.0),
-                                          border: Border.all(),
-                                          borderRadius:
-                                              BorderRadius.circular(18),
-                                        ),
-                                        width:
-                                            MediaQuery.of(context).size.width,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Learn To Play',
-                                              style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 16,
-                                                fontWeight: FontWeight.w600,
-                                              ),
-                                            ),
-                                            Container(
-                                                margin:
-                                                    const EdgeInsets.fromLTRB(
-                                                        35, 16, 2, 2),
-                                                child: SvgPicture.asset(
-                                                  'graphics/learnChess.svg',
-                                                  width: MediaQuery.of(context)
-                                                          .size
-                                                          .width *
-                                                      0.28,
-                                                ))
-                                          ],
-                                        ),
-                                      ),
-                                    ),
+                                                  const LearnChessScreen()));
+                                    },
+                                    backColor:
+                                        const Color.fromRGBO(0, 210, 211, 1.0),
+                                    imgURL: "graphics/learnChess.svg",
+                                    title: "Chess Lessons",
+                                    flexVal: 2,
+                                    imgScale: 0.28,
                                   ),
                                   Expanded(
                                     flex: 1,
@@ -507,31 +367,4 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 }
-//   return Scaffold(
-//   body: Padding(
-//     padding: const EdgeInsets.all(8.0),
-//     child: TextField(
-//       controller: _controller,
-//       autofocus: true,
-//       decoration: const InputDecoration(
-//         hintText: 'Enter Room ID',
-//       ),
-//     ),
-//   ),
-//   floatingActionButton: FloatingActionButton(
-//     onPressed: () {
-//       print('pressed');
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder: (context) => ChessBoardScreen(
-//             userOnDeviceID: widget.userOnDeviceID,
-//             roomID: _controller.text,
-//           ),
-//         ),
-//       );
-//     },
-//     child: const Icon(Icons.arrow_forward),
-//   ),
-// );
 

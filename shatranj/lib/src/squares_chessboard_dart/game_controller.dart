@@ -233,15 +233,15 @@ class GameController extends Cubit<GameState> {
     // emitState();
   }
 
-  // bool isCheckmate() {
-  //   // if (game == null) {
-  //   //   return true;
-  //   // }
-  //   if (game!.checkmate) {
-  //     return true;
-  //   }
-  //   return false;
-  // }
+  bool isCheckmate() {
+    // if (game == null) {
+    //   return true;
+    // }
+    if (game!.checkmate) {
+      return true;
+    }
+    return false;
+  }
 
   // bool isDraw() {
   //   if (game!.inDraw) {
@@ -287,7 +287,6 @@ class GameController extends Cubit<GameState> {
       game!.makeMove(result.move!);
       emitState();
     }
-    
   }
 
   String formatResult(bishop.EngineResult res) {
