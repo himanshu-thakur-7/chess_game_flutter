@@ -3,15 +3,24 @@ import 'package:fl_chart/fl_chart.dart';
 import '../internals/indicator.dart';
 
 class StatsPieChart extends StatefulWidget {
-  const StatsPieChart({Key? key}) : super(key: key);
+  final int? wins;
+  final int? losses;
+  final int? total;
+  final int? draws;
+  const StatsPieChart(
+      {Key? key,
+      required this.wins,
+      required this.losses,
+      required this.draws,
+      required this.total})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => StatsPieChartState();
 }
 
-class StatsPieChartState extends State {
+class StatsPieChartState extends State<StatsPieChart> {
   int touchedIndex = -1;
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -49,7 +58,11 @@ class StatsPieChartState extends State {
                               ),
                               sectionsSpace: 0,
                               centerSpaceRadius: 140,
-                              sections: showingSections()),
+                              sections: showingSections(
+                                  wins: widget.wins,
+                                  losses: widget.losses,
+                                  draws: widget.losses,
+                                  total: widget.total)),
                         ),
                       ),
                     ),
@@ -75,9 +88,9 @@ class StatsPieChartState extends State {
                                 color: Colors.amberAccent, fontSize: 25),
                           ),
                         ),
-                        const Text(
-                          "40",
-                          style: TextStyle(
+                        Text(
+                          "${widget.total}",
+                          style: const TextStyle(
                               color: Colors.amberAccent,
                               fontSize: 50,
                               fontWeight: FontWeight.w900),
@@ -134,7 +147,8 @@ class StatsPieChartState extends State {
     );
   }
 
-  List<PieChartSectionData> showingSections() {
+  List<PieChartSectionData> showingSections(
+      {int? wins, int? losses, int? draws, int? total}) {
     return List.generate(3, (i) {
       final isTouched = i == touchedIndex;
       final fontSize = isTouched ? 25.0 : 16.0;
@@ -143,8 +157,10 @@ class StatsPieChartState extends State {
         case 0:
           return PieChartSectionData(
             color: const Color.fromRGBO(50, 205, 50, 1),
-            value: 40,
-            title: '40%',
+            value: total == 0 ? 33.3 : (wins! / total!) * 100,
+            title: total == 0
+                ? "0%"
+                : " ${((wins! / total!) * 100).toStringAsFixed(1)} %",
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -154,8 +170,10 @@ class StatsPieChartState extends State {
         case 1:
           return PieChartSectionData(
             color: const Color.fromRGBO(159, 0, 0, 1),
-            value: 30,
-            title: '30%',
+            value: total == 0 ? 33.3 : (losses! / total!) * 100,
+            title: total == 0
+                ? "0%"
+                : " ${((losses! / total!) * 100).toStringAsFixed(1)} %",
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,
@@ -165,8 +183,10 @@ class StatsPieChartState extends State {
         case 2:
           return PieChartSectionData(
             color: const Color.fromRGBO(178, 190, 181, 1),
-            value: 30,
-            title: '30%',
+            value: total == 0 ? 33.3 : (draws! / total!) * 100,
+            title: total == 0
+                ? "0%"
+                : " ${((draws! / total!) * 100).toStringAsFixed(1)} %",
             radius: radius,
             titleStyle: TextStyle(
                 fontSize: fontSize,
