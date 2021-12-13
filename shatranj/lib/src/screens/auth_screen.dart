@@ -62,6 +62,10 @@ class _AuthScreenState extends State<AuthScreen> {
           'username': username,
           'email': email,
           'image_url': url,
+          'wins': 0,
+          'losses': 0,
+          'draws': 0,
+          'total': 0,
         }).then((value) => print("database updated"));
       }
     } on PlatformException catch (err) {

@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import './screens/home_screen.dart';
 import 'screens/splash_screen.dart';
 import "screens/auth_screen.dart";
+import 'screens/stats_screen.dart';
 
 class App extends StatelessWidget {
   const App({Key? key}) : super(key: key);
@@ -40,7 +41,7 @@ class App extends StatelessWidget {
             return const AuthScreen();
           },
         )
-        // home: PuzzleScreen(),
+        // home: const StatsScreen(),
         );
   }
 }

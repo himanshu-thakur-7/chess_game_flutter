@@ -1,5 +1,6 @@
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
 import 'package:chess_ui/src/screens/learn_chess_screen.dart';
+import 'package:chess_ui/src/screens/stats_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
@@ -264,85 +265,97 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                           Expanded(
-                            child: Container(
-                              margin: const EdgeInsets.all(5),
-                              child: Column(
-                                children: [
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8.0),
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            251, 209, 76, 1.0),
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      child: Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.center,
-                                        children: [
-                                          Container(
-                                            child: Image.asset(
-                                              "graphics/stats.png",
-                                              fit: BoxFit.contain,
-                                              width: MediaQuery.of(context)
-                                                      .size
-                                                      .width *
-                                                  0.12,
+                            child: InkWell(
+                              onTap: () {
+                                Navigator.of(context).push(
+                                  MaterialPageRoute(
+                                    builder: (context) => const StatsScreen(),
+                                  ),
+                                );
+                              },
+                              child: Container(
+                                margin: const EdgeInsets.all(5),
+                                child: Column(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8.0),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              251, 209, 76, 1.0),
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.center,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.center,
+                                          children: [
+                                            Container(
+                                              child: Image.asset(
+                                                "graphics/stats.png",
+                                                fit: BoxFit.contain,
+                                                width: MediaQuery.of(context)
+                                                        .size
+                                                        .width *
+                                                    0.12,
+                                              ),
                                             ),
-                                          ),
-                                          const Text(
-                                            'Stats',
-                                            style: TextStyle(
-                                                fontSize: 20,
-                                                fontWeight: FontWeight.w900),
-                                          ),
-                                        ],
+                                            const Text(
+                                              'Stats',
+                                              style: TextStyle(
+                                                  fontSize: 20,
+                                                  fontWeight: FontWeight.w900),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                  DashboardWidget(
-                                    widget: widget,
-                                    onTap: () {
-                                      Navigator.of(context).push(
-                                          MaterialPageRoute(
-                                              builder: (_) =>
-                                                  const LearnChessScreen()));
-                                    },
-                                    backColor:
-                                        const Color.fromRGBO(0, 210, 211, 1.0),
-                                    imgURL: "graphics/learnChess.svg",
-                                    title: "Chess Lessons",
-                                    flexVal: 2,
-                                    imgScale: 0.28,
-                                  ),
-                                  Expanded(
-                                    flex: 1,
-                                    child: Container(
-                                      margin: const EdgeInsets.symmetric(
-                                          vertical: 8),
-                                      decoration: BoxDecoration(
-                                        color: const Color.fromRGBO(
-                                            155, 26, 228, 1.0),
-                                        border: Border.all(),
-                                        borderRadius: BorderRadius.circular(18),
-                                      ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: const Center(
-                                          child: Text(
-                                        'PLAY',
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.w900),
-                                      )),
+                                    DashboardWidget(
+                                      widget: widget,
+                                      onTap: () {
+                                        Navigator.of(context).push(
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    const LearnChessScreen()));
+                                      },
+                                      backColor: const Color.fromRGBO(
+                                          0, 210, 211, 1.0),
+                                      imgURL: "graphics/learnChess.svg",
+                                      title: "Chess Lessons",
+                                      flexVal: 2,
+                                      imgScale: 0.28,
                                     ),
-                                  ),
-                                ],
+                                    Expanded(
+                                      flex: 1,
+                                      child: Container(
+                                        margin: const EdgeInsets.symmetric(
+                                            vertical: 8),
+                                        decoration: BoxDecoration(
+                                          color: const Color.fromRGBO(
+                                              155, 26, 228, 1.0),
+                                          border: Border.all(),
+                                          borderRadius:
+                                              BorderRadius.circular(18),
+                                        ),
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        child: const Center(
+                                            child: Text(
+                                          'PLAY',
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontWeight: FontWeight.w900),
+                                        )),
+                                      ),
+                                    ),
+                                  ],
+                                ),
                               ),
                             ),
                           ),
