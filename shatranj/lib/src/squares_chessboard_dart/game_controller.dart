@@ -303,7 +303,7 @@ class GameController extends Cubit<GameState> {
             dialogueType: DialogType.WARNING,
             animType: AnimType.BOTTOMSLIDE,
             desc: 'No valid moves possible');
-      } else {
+      } else if (isDraw()) {
         widget!.showDialog(
             message: 'Draw!',
             dialogueType: DialogType.WARNING,
