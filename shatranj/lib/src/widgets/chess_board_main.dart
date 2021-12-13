@@ -1,4 +1,5 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
+import 'package:chess_ui/src/screens/home_screen.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/game_controller.dart';
 import 'package:chess_ui/src/widgets/user_widget.dart';
@@ -89,6 +90,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.on(
           'startGame',
           (playerOneID) => {
+                setState(() {}),
                 _controller.emitState(),
                 print("${_controller.isGameNull()}: from start game event"),
                 socket.emit('loadUser', widget.userOnDeviceID),
@@ -144,60 +146,74 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
 
         // _controller.loadPGN(data);
 
-        // setState(() {
-        //   isPlayerTurn = true;
-        // });
+        setState(() {
+          isPlayerTurn = true;
+        });
       });
       // checkmate event handler
       socket.on("Checkmate", (data) {
         print("checkmate event");
         print(data);
-        AwesomeDialog(
-          width: MediaQuery.of(context).size.width,
-          context: context,
-          dialogType: DialogType.ERROR,
-          animType: AnimType.RIGHSLIDE,
-          headerAnimationLoop: true,
-          title: 'You Lose!!',
-          desc: '',
-          btnOkOnPress: () {},
-          btnOkIcon: Icons.cancel,
-          btnOkColor: Colors.red,
-          dismissOnTouchOutside: false,
-        ).show();
+
+        informUser(
+            message: 'You Lose!',
+            dialogueType: DialogType.ERROR,
+            animType: AnimType.RIGHSLIDE,
+            desc: '');
+
+        // AwesomeDialog(
+        //   width: MediaQuery.of(context).size.width,
+        //   context: context,
+        //   dialogType: DialogType.ERROR,
+        //   animType: AnimType.RIGHSLIDE,
+        //   headerAnimationLoop: true,
+        //   title: 'You Lose!!',
+        //   desc: '',
+        //   btnOkOnPress: () {},
+        //   btnOkIcon: Icons.cancel,
+        //   btnOkColor: Colors.red,
+        //   dismissOnTouchOutside: false,
+        // ).show();
         socket.emit("Roger", {'Checkmate'});
       });
       // // stalemate event handler
       socket.on("Stalemate", (data) {
-        AwesomeDialog(
-                context: context,
-                dialogType: DialogType.INFO,
-                headerAnimationLoop: true,
-                animType: AnimType.BOTTOMSLIDE,
-                showCloseIcon: true,
-                title: 'Stalemate!',
-                desc: 'Either Player unable to make valid move.',
-                btnCancelOnPress: () {},
-                onDissmissCallback: (type) {
-                  debugPrint('Dialog Dissmiss from callback $type');
-                },
-                btnOkOnPress: () {})
-            .show();
-        socket.emit("Roger", {'Stalemate'});
+        informUser(
+            message: 'Stalemate!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'No valid moves possible');
+        // AwesomeDialog(
+        //         context: context,
+        //         dialogType: DialogType.INFO,
+        //         headerAnimationLoop: true,
+        //         animType: AnimType.BOTTOMSLIDE,
+        //         showCloseIcon: false,
+        //         title: 'Stalemate!',
+        //         desc: 'Either Player unable to make valid move.',
+        //         btnCancelOnPress: () {},
+        //         btnOkOnPress: () {})
+        //     .show();
+        // socket.emit("Roger", {'Stalemate'});
       });
       // // draw event handler
       socket.on("Draw", (data) {
-        AwesomeDialog(
-                context: context,
-                dialogType: DialogType.WARNING,
-                headerAnimationLoop: true,
-                animType: AnimType.TOPSLIDE,
-                showCloseIcon: true,
-                title: 'Draw!',
-                desc: data,
-                btnCancelOnPress: () {},
-                btnOkOnPress: () {})
-            .show();
+        informUser(
+            message: 'Draw!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.TOPSLIDE,
+            desc: data);
+        // AwesomeDialog(
+        //         context: context,
+        //         dialogType: DialogType.WARNING,
+        //         headerAnimationLoop: true,
+        //         animType: AnimType.TOPSLIDE,
+        //         showCloseIcon: false,
+        //         title: 'Draw!',
+        //         desc: data,
+        //         btnCancelOnPress: () {},
+        //         btnOkOnPress: () {})
+        //     .show();
 
         socket.emit("Roger", {'Draw'});
       });
@@ -265,26 +281,38 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
 
       socket.emit("draw", reason);
     }
-    // setState(() {
-    //   isPlayerTurn = false;
-    // });
+    setState(() {
+      isPlayerTurn = false;
+    });
 
     // print("from the parent screen");
   }
 
-  informUser() {
+  informUser({
+    message,
+    dialogueType,
+    animType,
+    desc,
+  }) {
     AwesomeDialog(
       context: context,
-      animType: AnimType.LEFTSLIDE,
+      animType: animType,
       headerAnimationLoop: true,
-      dialogType: DialogType.SUCCES,
-      showCloseIcon: true,
-      title: 'You Win!!',
-      desc: '',
+      dialogType: dialogueType,
+      showCloseIcon: false,
+      title: message,
+      desc: desc,
+      // btnOkIcon: Icons.check_circle,
       btnOkOnPress: () {
-        debugPrint('OnClcik');
+        Navigator.of(context).pushReplacement(
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(
+              userOnDeviceID: widget.userOnDeviceID,
+            ),
+          ),
+        );
       },
-      btnOkIcon: Icons.check_circle,
+      btnOkText: 'Main Menu',
       dismissOnTouchOutside: false,
     ).show();
   }
@@ -370,7 +398,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                     chessKey: ck,
                     boardOrientation: isPlayerWhite ? WHITE : BLACK,
                     gc: _controller,
-                    // canMove: isPlayerTurn,
+                    canMove: isPlayerTurn,
                     onMove: communicateMoves,
                     vsComp: widget.comp,
                   ),

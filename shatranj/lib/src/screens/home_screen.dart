@@ -241,7 +241,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             print(
                                                 "room ID : ${_controller.text}");
 
-                                            Navigator.of(context).push(
+                                            Navigator.of(context)
+                                                .pushReplacement(
                                               MaterialPageRoute(
                                                 builder: (context) =>
                                                     ChessBoardScreen(

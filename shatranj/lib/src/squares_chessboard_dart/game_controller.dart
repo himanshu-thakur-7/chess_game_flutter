@@ -1,3 +1,4 @@
+import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:bishop/bishop.dart' as bishop;
 import 'package:bloc/bloc.dart';
 // import 'package:chess_ui/src/board_decode.dart';
@@ -98,6 +99,9 @@ class GameController extends Cubit<GameState> {
       moves: moves,
       hands: game!.handSymbols(),
     );
+    // gkc.currentState!.setState(() {
+    //   gkc.currentState!.canMove = true;
+    // });
     emit(gs!);
     // print("Emitted successfully");
   }
@@ -144,7 +148,7 @@ class GameController extends Cubit<GameState> {
     emitState();
   }
 
-  void makeMove(Move move, {String? fen, bool? vsEngine}) {
+  void makeMove(Move move, {String? fen, bool? vsEngine, ChessBoard2? widget}) {
     // print(" Line 78 Move: $move");
 
     if (game == null) {
@@ -163,7 +167,8 @@ class GameController extends Cubit<GameState> {
       emitState();
 
       if (vsEngine!) {
-        Future.delayed(Duration(milliseconds: 200)).then((_) => engineMove());
+        Future.delayed(Duration(milliseconds: 200))
+            .then((_) => engineMove(widget));
         // engineMove();
       }
     }
@@ -277,7 +282,7 @@ class GameController extends Cubit<GameState> {
   //   emitState();
   // }
 
-  void engineMove() async {
+  void engineMove(ChessBoard2? widget) async {
     emitState(true);
     await Future.delayed(Duration(milliseconds: 250));
     // bishop.EngineResult result = await engine!.search();
@@ -286,6 +291,25 @@ class GameController extends Cubit<GameState> {
       print('Best Move: ${formatResult(result)}');
       game!.makeMove(result.move!);
       emitState();
+      if (isCheckmate()) {
+        widget!.showDialog(
+            message: 'You Lose!',
+            dialogueType: DialogType.ERROR,
+            animType: AnimType.RIGHSLIDE,
+            desc: '');
+      } else if (isStalemate()) {
+        widget!.showDialog(
+            message: 'Stalemate!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'No valid moves possible');
+      } else {
+        widget!.showDialog(
+            message: 'Draw!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.TOPSLIDE,
+            desc: '');
+      }
     }
   }
 
