@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:chess_ui/src/widgets/auth_form.dart';
+import 'package:chess_ui/src/widgets/curve_clipper.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -97,10 +98,29 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      
       backgroundColor: Theme.of(context).primaryColor,
-      body: AuthForm(
-        submitFn: _submitAuthForm,
-        isLoading: _isLoading,
+      body: SingleChildScrollView(
+        child: Container(
+          margin: EdgeInsets.only(left: 0),
+          child: Column(
+            children: [
+              ClipPath(
+                clipper: CurveClipper(),
+                child: Image(
+                  fit: BoxFit.cover,
+                  height: MediaQuery.of(context).size.height / 2.6,
+                  width: double.infinity,
+                  image: const AssetImage("graphics/poster.jpg"),
+                ),
+              ),
+              AuthForm(
+                submitFn: _submitAuthForm,
+                isLoading: _isLoading,
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

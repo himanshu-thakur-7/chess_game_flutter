@@ -1,7 +1,9 @@
+import 'package:chess_ui/src/screens/auth_screen.dart';
 import 'package:chess_ui/src/screens/chess_board_screen.dart';
 import 'package:chess_ui/src/screens/learn_chess_screen.dart';
 import 'package:chess_ui/src/screens/stats_screen.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:awesome_dialog/awesome_dialog.dart';
 import '../widgets/dashboard_widget.dart';
@@ -100,10 +102,34 @@ class _HomeScreenState extends State<HomeScreen> {
                           margin: const EdgeInsets.only(left: 120),
                           child: IconButton(
                             icon: const Icon(
-                              Icons.more_vert_outlined,
+                              Icons.exit_to_app_outlined,
                               color: Colors.green,
                             ),
-                            onPressed: () => {print('hi')},
+                            onPressed: () => {
+                              AwesomeDialog(
+                                context: context,
+                                dialogType: DialogType.QUESTION,
+                                headerAnimationLoop: true,
+                                animType: AnimType.BOTTOMSLIDE,
+                                title: 'LOG OUT',
+                                desc: 'Do you wish to log out ?',
+                                btnOkText: "Yes",
+                                btnCancelText: "No",
+                                dismissOnTouchOutside: false,
+                                buttonsTextStyle:
+                                    const TextStyle(color: Colors.white),
+                                showCloseIcon: true,
+                                btnCancelOnPress: () {},
+                                btnOkOnPress: () async {
+                                  await FirebaseAuth.instance.signOut();
+                                  Navigator.pushReplacement(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AuthScreen()));
+                                },
+                              ).show()
+                            },
                           ),
                         ),
                       )

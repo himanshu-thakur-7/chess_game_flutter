@@ -25,7 +25,7 @@ class AuthForm extends StatefulWidget {
 class _AuthFormState extends State<AuthForm> {
   final _formKey = GlobalKey<FormState>();
 
-  var _isLogin = true;
+  var _isLogin = false;
   String? _userEmail = "";
   String? _userName = "";
   String? _userPassword = "";
@@ -71,6 +71,7 @@ class _AuthFormState extends State<AuthForm> {
   Widget build(BuildContext context) {
     return Center(
       child: Card(
+        color: const Color.fromRGBO(155, 96, 248, 1.0),
         margin: const EdgeInsets.all(20.0),
         child: SingleChildScrollView(
           child: Padding(
@@ -85,6 +86,8 @@ class _AuthFormState extends State<AuthForm> {
                         imagePickFn: _pickedImage,
                       ),
                     TextFormField(
+                      cursorColor: Colors.amber,
+                      style: const TextStyle(color: Colors.white),
                       key: const ValueKey('email'),
                       validator: (value) {
                         if (value == null ||
@@ -95,31 +98,67 @@ class _AuthFormState extends State<AuthForm> {
                         return null;
                       },
                       keyboardType: TextInputType.emailAddress,
-                      decoration: const InputDecoration(
-                        labelText: 'Email',
-                      ),
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
+                          // fillColor: Colors.white,
+                          labelStyle: TextStyle(color: Colors.white70),
+                          // filled: true,
+                          focusColor: Colors.white,
+                          // filled: true,
+                          labelText: 'Email',
+                          prefixIcon: Icon(
+                            Icons.email,
+                            color: Theme.of(context).accentColor,
+                          )),
                       onSaved: (value) {
                         _userEmail = value;
                       },
                     ),
                     if (!_isLogin)
                       TextFormField(
+                        cursorColor: Colors.amber,
+                        style: const TextStyle(color: Colors.white),
                         key: const ValueKey('username'),
                         validator: (val) {
                           if (val == null || val.isEmpty || val.length < 4) {
                             return "Please enter atleast 4 characters";
                           }
+                          if (val.length > 10) {
+                            return "Username can be of 10 characters (max)";
+                          }
                           return null;
                         },
                         keyboardType: TextInputType.text,
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
+                          labelStyle: TextStyle(color: Colors.white70),
                           labelText: 'Username',
+                          prefixIcon: Icon(
+                            Icons.person,
+                            color: Theme.of(context).accentColor,
+                          ),
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
                         ),
                         onSaved: (value) {
                           _userName = value;
                         },
                       ),
                     TextFormField(
+                      cursorColor: Colors.amber,
+                      style: const TextStyle(color: Colors.white),
                       key: const ValueKey('password'),
                       validator: (val) {
                         if (val == null || val.isEmpty || val.length < 7) {
@@ -129,17 +168,35 @@ class _AuthFormState extends State<AuthForm> {
                       },
                       keyboardType: TextInputType.text,
                       obscureText: true,
-                      decoration: const InputDecoration(
-                        labelText: 'Password',
-                      ),
+                      decoration: InputDecoration(
+                          enabledBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
+                          focusedBorder: UnderlineInputBorder(
+                            borderSide:
+                                BorderSide(color: Colors.amberAccent[100]!),
+                          ),
+                          labelStyle: TextStyle(color: Colors.white70),
+                          labelText: 'Password',
+                          prefixIcon: Icon(
+                            Icons.lock,
+                            color: Theme.of(context).accentColor,
+                          )),
                       onSaved: (value) {
                         _userPassword = value;
                       },
                     ),
                     const SizedBox(height: 12),
-                    if (widget.isLoading) const CircularProgressIndicator(),
+                    if (widget.isLoading)
+                      const CircularProgressIndicator(
+                        color: Colors.amber,
+                      ),
                     if (!widget.isLoading)
                       ElevatedButton(
+                        style: ButtonStyle(
+                            backgroundColor:
+                                MaterialStateProperty.all(Colors.amber[600])),
                         child: Text(_isLogin ? 'Login' : 'Signup'),
                         onPressed: _trySubmit,
                       ),
@@ -149,9 +206,12 @@ class _AuthFormState extends State<AuthForm> {
                           _isLogin = !_isLogin;
                         });
                       },
-                      child: Text(_isLogin
-                          ? 'Create Acoount'
-                          : 'I already have an account'),
+                      child: Text(
+                        _isLogin
+                            ? 'Create Acoount'
+                            : 'I already have an account',
+                        style: TextStyle(color: Theme.of(context).accentColor),
+                      ),
                     )
                   ],
                 )),
