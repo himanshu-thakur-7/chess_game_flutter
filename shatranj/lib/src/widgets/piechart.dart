@@ -109,29 +109,29 @@ class StatsPieChartState extends State<StatsPieChart> {
                 mainAxisSize: MainAxisSize.max,
                 mainAxisAlignment: MainAxisAlignment.end,
                 crossAxisAlignment: CrossAxisAlignment.start,
-                children: const <Widget>[
+                children: <Widget>[
                   Indicator(
                     color: Color.fromRGBO(50, 205, 50, 1),
-                    text: 'Won',
+                    text: 'Won :  ${widget.wins!}',
                     isSquare: true,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Indicator(
                     color: Color.fromRGBO(159, 0, 0, 1),
-                    text: 'Lost',
+                    text: 'Lost :  ${widget.losses}',
                     isSquare: true,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 4,
                   ),
                   Indicator(
                     color: Color.fromRGBO(178, 190, 181, 1),
-                    text: 'Draw',
+                    text: 'Draw :  ${widget.draws}',
                     isSquare: true,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     height: 18,
                   ),
                 ],
