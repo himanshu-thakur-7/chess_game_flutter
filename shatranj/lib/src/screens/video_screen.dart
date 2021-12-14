@@ -20,7 +20,7 @@ class _VideoScreenState extends State<VideoScreen> {
       initialVideoId: widget.id,
       flags: const YoutubePlayerFlags(
         enableCaption: false,
-        forceHD: true,
+        forceHD: false,
         mute: false,
         autoPlay: true,
       ),
@@ -38,7 +38,7 @@ class _VideoScreenState extends State<VideoScreen> {
   youtubePlayer() {
     return Center(
       child: FittedBox(
-        fit: BoxFit.cover,
+        fit: BoxFit.contain,
         child: YoutubePlayer(
           controller: _controller,
           showVideoProgressIndicator: true,

@@ -1,6 +1,7 @@
 import 'package:chess_ui/models/video_model.dart';
 import 'package:chess_ui/services/api_service.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 import 'video_screen.dart';
 
@@ -39,7 +40,11 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
           MaterialPageRoute(
             builder: (_) => VideoScreen(id: video.id),
           ),
-        )
+        ).then((value) => {
+              print("back on to video list Screen"),
+              SystemChrome.setPreferredOrientations(
+                  [DeviceOrientation.portraitUp])
+            })
       },
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 20, vertical: 7.0),
