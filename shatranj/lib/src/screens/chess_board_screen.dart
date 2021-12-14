@@ -26,18 +26,29 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      appBar: AppBar(
-        backgroundColor: const Color.fromRGBO(0, 210, 211, 1.0),
-        title: const Text('Let\'s Play'),
-      ),
+      // appBar: AppBar(
+      //   backgroundColor: const Color.fromRGBO(0, 210, 211, 1.0),
+      //   title: const Text('Let\'s Play'),
+      // ),
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
-        child: Center(
-          child: ChessBoardWidget(
-            comp: this.widget.comp,
-            roomID: widget.roomID,
-            userOnDeviceID: widget.userOnDeviceID,
-          ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              margin: EdgeInsets.only(top: 30),
+              child: Image.asset(
+                'graphics/horse.png',
+                width: MediaQuery.of(context).size.width * 0.22,
+                height: MediaQuery.of(context).size.height * 0.14,
+              ),
+            ),
+            ChessBoardWidget(
+              comp: this.widget.comp,
+              roomID: widget.roomID,
+              userOnDeviceID: widget.userOnDeviceID,
+            ),
+          ],
         ),
       ),
       // body: const ChessBoardWidget(),

@@ -356,96 +356,94 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   Widget build(BuildContext context) {
     // print("setState called HotReload: PArent Screen");
     return canJoin
-        ? Center(
-            child: Container(
-              height: MediaQuery.of(context).size.height,
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  // TimerWidget(
-                  //   key: _opponentKey,
-                  //   isColorWhite: !isPlayerWhite,
-                  // ),
-                  opponentID == null
-                      ? const UserWidget(
-                          username: "computer",
-                          profilePicURL:
-                              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
-                      : buildUserWidget(opponentID),
-                  const SizedBox(height: 10),
-                  // ChessBoard(
-                  //   size: MediaQuery.of(context).size.height * 0.5,
-                  //   enableUserMoves: isPlayerTurn,
-                  //   boardOrientation:
-                  //       isPlayerWhite ? PlayerColor.white : PlayerColor.black,
-                  //   boardColor: BoardColor.darkBrown,
-                  //   controller: _controller,
-                  //   onMove: () {
-                  //     // stop the timer of the player who made the move and start the timer of the other player
-                  //     // _myKey.currentState?.stopTimer();
-                  //     // _opponentKey.currentState?.startTimer();
+        ? Container(
+            height: MediaQuery.of(context).size.height / 1.2,
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                // TimerWidget(
+                //   key: _opponentKey,
+                //   isColorWhite: !isPlayerWhite,
+                // ),
+                opponentID == null
+                    ? const UserWidget(
+                        username: "computer",
+                        profilePicURL:
+                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
+                    : buildUserWidget(opponentID),
+                const SizedBox(height: 10),
+                // ChessBoard(
+                //   size: MediaQuery.of(context).size.height * 0.5,
+                //   enableUserMoves: isPlayerTurn,
+                //   boardOrientation:
+                //       isPlayerWhite ? PlayerColor.white : PlayerColor.black,
+                //   boardColor: BoardColor.darkBrown,
+                //   controller: _controller,
+                //   onMove: () {
+                //     // stop the timer of the player who made the move and start the timer of the other player
+                //     // _myKey.currentState?.stopTimer();
+                //     // _opponentKey.currentState?.startTimer();
 
-                  //     if (!widget.comp) {
-                  //       String currPGN = "";
-                  //       for (String? s in _controller.getSan()) {
-                  //         currPGN += (s ?? "") + " ";
-                  //       }
-                  //       print(currPGN);
+                //     if (!widget.comp) {
+                //       String currPGN = "";
+                //       for (String? s in _controller.getSan()) {
+                //         currPGN += (s ?? "") + " ";
+                //       }
+                //       print(currPGN);
 
-                  //       socket.emit('moved', currPGN);
+                //       socket.emit('moved', currPGN);
 
-                  //       // check if the player is in checkmate
-                  //       if (_controller.isCheckMate()) {
-                  //         socket
-                  //             .emit("checkmate", {'checkmate ho gya hai bhai'});
-                  //       }
-                  //       // check stalemate
-                  //       else if (_controller.isStaleMate()) {
-                  //         socket
-                  //             .emit("stalemate", {'stalemate ho gya hai bhai'});
-                  //       }
-                  //       // check draw
-                  //       else if (_controller.isDraw() ||
-                  //           _controller.isInsufficientMaterial() ||
-                  //           _controller.isThreefoldRepetition()) {
-                  //         socket.emit("draw", {'draw ho gya hai bhai'});
-                  //       }
+                //       // check if the player is in checkmate
+                //       if (_controller.isCheckMate()) {
+                //         socket
+                //             .emit("checkmate", {'checkmate ho gya hai bhai'});
+                //       }
+                //       // check stalemate
+                //       else if (_controller.isStaleMate()) {
+                //         socket
+                //             .emit("stalemate", {'stalemate ho gya hai bhai'});
+                //       }
+                //       // check draw
+                //       else if (_controller.isDraw() ||
+                //           _controller.isInsufficientMaterial() ||
+                //           _controller.isThreefoldRepetition()) {
+                //         socket.emit("draw", {'draw ho gya hai bhai'});
+                //       }
 
-                  //       // if the player has made a move, then it is not their turn anymore
-                  //       setState(() {
-                  //         isPlayerTurn = false;
-                  //       });
-                  //     } else {
-                  //       setState(() {
-                  //         isPlayerTurn = false;
-                  //       });
-                  //       getMoveFromEngine();
-                  //       // getEngineMove(_controller.getFen());
-                  //       // TODO: Set up engine move functionality
+                //       // if the player has made a move, then it is not their turn anymore
+                //       setState(() {
+                //         isPlayerTurn = false;
+                //       });
+                //     } else {
+                //       setState(() {
+                //         isPlayerTurn = false;
+                //       });
+                //       getMoveFromEngine();
+                //       // getEngineMove(_controller.getFen());
+                //       // TODO: Set up engine move functionality
 
-                  //     }
-                  //   },
-                  // ),
-                  ChessBoard2(
-                    userOnDeviceID: widget.userOnDeviceID,
-                    showDialog: informUser,
-                    chessKey: ck,
-                    boardOrientation: isPlayerWhite ? WHITE : BLACK,
-                    gc: _controller,
-                    canMove: isPlayerTurn,
-                    onMove: communicateMoves,
-                    vsComp: widget.comp,
-                  ),
-                  const SizedBox(height: 10),
-                  // TimerWidget(
-                  //   key: _myKey,
-                  //   isColorWhite: isPlayerWhite,
-                  // ),
-                  buildUserWidget(widget.userOnDeviceID),
-                ],
-              ),
+                //     }
+                //   },
+                // ),
+                ChessBoard2(
+                  userOnDeviceID: widget.userOnDeviceID,
+                  showDialog: informUser,
+                  chessKey: ck,
+                  boardOrientation: isPlayerWhite ? WHITE : BLACK,
+                  gc: _controller,
+                  canMove: isPlayerTurn,
+                  onMove: communicateMoves,
+                  vsComp: widget.comp,
+                ),
+                const SizedBox(height: 10),
+                // TimerWidget(
+                //   key: _myKey,
+                //   isColorWhite: isPlayerWhite,
+                // ),
+                buildUserWidget(widget.userOnDeviceID),
+              ],
             ),
           )
         : const RoomFullScreen();
