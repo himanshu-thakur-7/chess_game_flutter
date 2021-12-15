@@ -10,6 +10,8 @@ io.on('connection', function (socket) {
 
     socket.on('playerReady', (roomID) => {
 
+
+
         console.log("Room ID:", roomID);
         if (roomsInfo[roomID] == undefined) {
             roomsInfo[roomID] = 0;
@@ -43,24 +45,37 @@ io.on('connection', function (socket) {
         socket.on("checkmate", (data) => {
             console.log(data);
             socket.to(roomID).emit("Checkmate", "Checkmated bro!!");
+
         });
 
         socket.on("draw", (data) => {
             console.log(data);
             io.to(roomID).emit("Draw", data);
+
         });
         socket.on("stalemate", (data) => {
             console.log(data);
             io.to(roomID).emit("Stalemate", "Stalemate bro!!");
+
         });
 
+        socket.on('game abandoned', (reason) => {
+
+            roomsInfo[roomID]--;
+            socket.leave(roomID);
+            socket.disconnect(true);
+
+        });
+        socket.on('exit room', (reason) => {
+            console.log(reason);
+            roomsInfo[roomID]--;
+            socket.leave(roomID);
+            socket.disconnect(true);
+
+        })
 
     });
 
-
-    socket.on("Roger", (affirmation) => {
-        console.log(affirmation);
-    })
 });
 
 var port = process.env.PORT || 8080;

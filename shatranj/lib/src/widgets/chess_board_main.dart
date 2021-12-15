@@ -33,7 +33,6 @@ bool isPlayerTurn = true;
 
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
-var opponentID = null;
 
 class ChessBoardWidget extends StatefulWidget {
   final String? roomID;
@@ -50,13 +49,14 @@ class ChessBoardWidget extends StatefulWidget {
   _ChessBoardWidgetState createState() => _ChessBoardWidgetState();
 }
 
-GameController _controller = GameController();
-IO.Socket socket = IO.io('/');
-
 class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   bool canJoin = true;
+  var opponentID = null;
+  IO.Socket socket = IO.io('/');
+  var lock = 0;
+  GameController _controller = GameController();
   // final ChessBoardController _controller = ChessBoardController();
-  var t = Timer(Duration(seconds: 0), () {});
+  var t = Timer(Duration(seconds: 1000000000000), () {});
   var dialog;
   Widget buildUserWidget(String userID) {
     return StreamBuilder(
@@ -70,8 +70,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           }
           // print(snapshot);
           var userDocument = snapshot.data;
-          print(userDocument!.get("username"));
-          final username = userDocument.get("username");
+          // print(userDocument!.get("username"));
+          final username = userDocument!.get("username");
           final profilePicURL = userDocument.get("image_url");
           return UserWidget(username: username, profilePicURL: profilePicURL);
         });
@@ -85,37 +85,48 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         'transports': ['websocket'],
         'autoConnect': false,
       });
+      print(socket.id);
+      print("inside try");
       socket.connect();
+      print("dfndjf");
       socket.on('connect', (_) {
-        t = Timer(
-            Duration(seconds: 10),
-            () => {
-                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
-                  //     builder: (context) => HomeScreen(
-                  //           userOnDeviceID: widget.userOnDeviceID,
-                  //         )))
-                  Navigator.of(context).pop('Sorry! No opponent joined'),
-                });
-        dialog = AwesomeDialog(
-          context: context,
-          animType: AnimType.SCALE,
-          dialogType: DialogType.INFO,
-          title: 'Room Joined.',
-          desc: 'Waiting for other player...',
-          headerAnimationLoop: false,
-          autoHide: const Duration(seconds: 9),
-          useRootNavigator: true,
-          // btnOkOnPress: () {},
-        );
-        dialog.show();
-        print("Socket ${socket.id} connected");
-        socket.emit('playerReady', widget.roomID);
+        if (lock == 0) {
+          print("Param: $_");
+          print("connection success");
+          t = Timer(
+              Duration(seconds: 10),
+              () => {
+                    print("yo bro"),
+                    socket.emit('game abandoned', "opponent did'nt join"),
+                    Navigator.of(context).pop('Sorry! No opponent joined'),
+                    socket.disconnect(),
+                    print("srry bro")
+                  });
+          dialog = AwesomeDialog(
+            context: context,
+            animType: AnimType.SCALE,
+            dialogType: DialogType.INFO,
+            title: 'Room Joined.',
+            desc: 'Waiting for other player...',
+            headerAnimationLoop: false,
+            autoHide: const Duration(seconds: 8),
+            useRootNavigator: true,
+            dismissOnTouchOutside: false,
+            dismissOnBackKeyPress: false,
+            // btnOkOnPress: () {},
+          );
+          dialog.show();
+          print("Socket ${socket.id} connected");
+          socket.emit('playerReady', widget.roomID);
+          lock = 1;
+        }
       });
       // set the players as white or black on game start
       socket.on(
           'startGame',
           (playerOneID) => {
                 t.cancel(),
+                print(t.isActive),
                 dialog.dismiss(),
                 setState(() {}),
                 _controller.emitState(),
@@ -233,7 +244,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             print("stats updated!"),
           },
         );
-        socket.emit("Roger", {'Checkmate'});
+        socket.emit("exit room", {'Checkmate'});
+        socket.disconnect();
       });
       // // stalemate event handler
       socket.on("Stalemate", (data) {
@@ -265,6 +277,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             print("stats updated!"),
           },
         );
+
+        socket.emit("exit room", {'Stalemate'});
+        socket.disconnect();
       });
       // // draw event handler
       socket.on("Draw", (data) {
@@ -295,8 +310,19 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             print("stats updated!"),
           },
         );
-        socket.emit("Roger", {'Draw'});
+        socket.emit("exit room", {'Draw'});
+        socket.disconnect();
       });
+
+      // socket.on(
+      //     "Game Over",
+      //     (data) => {
+      //           informUser(
+      //               message: 'You Win!',
+      //               desc: data,
+      //               dialogueType: DialogType.SUCCES,
+      //               animType: AnimType.RIGHSLIDE)
+      //         });
     } catch (e) {
       print(e.toString());
     }
@@ -305,6 +331,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   @override
   @mustCallSuper
   void initState() {
+    print("init state!!!!");
     super.initState();
     // _controller = GameController();
 

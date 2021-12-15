@@ -35,26 +35,26 @@ class ChessBoard2State extends State<ChessBoard2> {
   PieceSet pieceSet = PieceSet.merida();
   // bool? canMove;
 
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-    startGame();
-    setState(() {});
-  }
+  // @override
+  // void initState() {
+  //   // TODO: implement initState
+  //   super.initState();
+  //   startGame();
+  //   // setState(() {});
+  // }
 
   @override
   void didUpdateWidget(covariant ChessBoard2 oldWidget) {
     // TODO: implement didUpdateWidget
     super.didUpdateWidget(oldWidget);
-    if (widget.gc.getFen() != "") {
-      print("loading updated fen");
-      startGame(fen: widget.gc.getFen());
-    } else {
-      print("calling start game from didUpdateWidget ");
-      startGame();
-      print("hi from did update dep");
-    }
+    // if (widget.gc.getFen() != "") {
+    //   print("loading updated fen");
+    //   startGame(fen: widget.gc.getFen());
+    // } else {
+    //   print("calling start game from didUpdateWidget ");
+    startGame();
+    //   print("hi from did update dep");
+    // }
   }
 
   @override

@@ -277,8 +277,11 @@ class _HomeScreenState extends State<HomeScreen> {
                                           )
                                               .then((value) {
                                             if (value != null) {
+                                              print(value);
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
+                                                      backgroundColor:
+                                                          Colors.amber[700],
                                                       content: Text(value)));
                                             }
                                           });
