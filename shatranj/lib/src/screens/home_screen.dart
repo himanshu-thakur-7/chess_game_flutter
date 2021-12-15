@@ -338,8 +338,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                           const Text(
                                             'Stats',
                                             style: TextStyle(
+                                                color: Colors.white,
                                                 fontSize: 20,
-                                                fontWeight: FontWeight.w900),
+                                                fontWeight: FontWeight.normal),
                                           ),
                                         ],
                                       ),

@@ -98,25 +98,29 @@ class _AuthScreenState extends State<AuthScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
+        // physics: NeverScrollableScrollPhysics(),
         child: Container(
-          margin: EdgeInsets.only(left: 0),
-          child: Column(
+          // margin: EdgeInsets.only(left: 0),
+          child: Stack(
             children: [
+              Container(
+                margin: EdgeInsets.only(
+                    top: MediaQuery.of(context).size.height / 3),
+                child: AuthForm(
+                  submitFn: _submitAuthForm,
+                  isLoading: _isLoading,
+                ),
+              ),
               ClipPath(
                 clipper: CurveClipper(),
                 child: Image(
                   fit: BoxFit.cover,
-                  height: MediaQuery.of(context).size.height / 2.6,
+                  height: MediaQuery.of(context).size.height / 2.3,
                   width: double.infinity,
                   image: const AssetImage("graphics/poster.jpg"),
                 ),
-              ),
-              AuthForm(
-                submitFn: _submitAuthForm,
-                isLoading: _isLoading,
               ),
             ],
           ),

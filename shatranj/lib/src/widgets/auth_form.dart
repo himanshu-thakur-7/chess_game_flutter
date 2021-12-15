@@ -46,7 +46,7 @@ class _AuthFormState extends State<AuthForm> {
           content: const Text(
             'Please pick an image.',
           ),
-          backgroundColor: Theme.of(context).errorColor,
+          backgroundColor: Colors.amber[800],
         ),
       );
       return;
@@ -99,6 +99,7 @@ class _AuthFormState extends State<AuthForm> {
                       },
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
+                          errorStyle: TextStyle(color: Colors.amber[200]),
                           enabledBorder: UnderlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.amberAccent[100]!),
@@ -137,6 +138,7 @@ class _AuthFormState extends State<AuthForm> {
                         },
                         keyboardType: TextInputType.text,
                         decoration: InputDecoration(
+                          errorStyle: TextStyle(color: Colors.amber[200]),
                           labelStyle: TextStyle(color: Colors.white70),
                           labelText: 'Username',
                           prefixIcon: Icon(
@@ -169,6 +171,7 @@ class _AuthFormState extends State<AuthForm> {
                       keyboardType: TextInputType.text,
                       obscureText: true,
                       decoration: InputDecoration(
+                          errorStyle: TextStyle(color: Colors.amber[200]),
                           enabledBorder: UnderlineInputBorder(
                             borderSide:
                                 BorderSide(color: Colors.amberAccent[100]!),
