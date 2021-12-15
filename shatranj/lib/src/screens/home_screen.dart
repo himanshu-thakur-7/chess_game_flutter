@@ -260,21 +260,29 @@ class _HomeScreenState extends State<HomeScreen> {
                                         btnCancelOnPress: () {},
                                         btnOkText: 'Join',
                                         btnOkOnPress: () {
-                                          print(
-                                              "room ID : ${_controller.text}");
+                                          var rid = _controller.text;
+                                          print("room ID : ${rid}");
 
-                                          Navigator.of(context).pushReplacement(
+                                          Navigator.of(context)
+                                              .push(
                                             MaterialPageRoute(
                                               builder: (context) =>
                                                   ChessBoardScreen(
                                                 comp: false,
-                                                roomID: _controller.text,
+                                                roomID: rid,
                                                 userOnDeviceID:
                                                     widget.userOnDeviceID,
                                               ),
                                             ),
-                                          );
-                                          // _controller.clear();
+                                          )
+                                              .then((value) {
+                                            if (value != null) {
+                                              ScaffoldMessenger.of(context)
+                                                  .showSnackBar(SnackBar(
+                                                      content: Text(value)));
+                                            }
+                                          });
+                                          _controller.clear();
                                         },
                                       ).show();
                                     },

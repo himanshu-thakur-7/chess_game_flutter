@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:chess_ui/src/screens/home_screen.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
@@ -54,7 +56,8 @@ IO.Socket socket = IO.io('/');
 class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   bool canJoin = true;
   // final ChessBoardController _controller = ChessBoardController();
-
+  var t = Timer(Duration(seconds: 0), () {});
+  var dialog;
   Widget buildUserWidget(String userID) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -84,6 +87,27 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       });
       socket.connect();
       socket.on('connect', (_) {
+        t = Timer(
+            Duration(seconds: 10),
+            () => {
+                  // Navigator.of(context).pushReplacement(MaterialPageRoute(
+                  //     builder: (context) => HomeScreen(
+                  //           userOnDeviceID: widget.userOnDeviceID,
+                  //         )))
+                  Navigator.of(context).pop('Sorry! No opponent joined'),
+                });
+        dialog = AwesomeDialog(
+          context: context,
+          animType: AnimType.SCALE,
+          dialogType: DialogType.INFO,
+          title: 'Room Joined.',
+          desc: 'Waiting for other player...',
+          headerAnimationLoop: false,
+          autoHide: const Duration(seconds: 9),
+          useRootNavigator: true,
+          // btnOkOnPress: () {},
+        );
+        dialog.show();
         print("Socket ${socket.id} connected");
         socket.emit('playerReady', widget.roomID);
       });
@@ -91,6 +115,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.on(
           'startGame',
           (playerOneID) => {
+                t.cancel(),
+                dialog.dismiss(),
                 setState(() {}),
                 _controller.emitState(),
                 print("${_controller.isGameNull()}: from start game event"),
@@ -124,10 +150,29 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       socket.on(
           'roomFull',
           (_) => {
+                t.cancel(),
+                dialog.dismiss(),
                 print('room full'),
-                setState(() {
-                  canJoin = false;
-                })
+                AwesomeDialog(
+                  context: context,
+                  animType: AnimType.SCALE,
+                  headerAnimationLoop: true,
+                  dialogType: DialogType.ERROR,
+                  showCloseIcon: false,
+                  title: "Room is full",
+                  desc: 'Sorry.. Room is occupied. Please try later.',
+                  onDissmissCallback: (type) =>
+                      {print("callback called"), Navigator.of(context).pop()},
+                  // btnOkIcon: Icons.check_circle,
+                  btnOkOnPress: () {
+                    // Navigator.of(context).pop();
+                  },
+                  btnOkText: 'Main Menu',
+                  dismissOnTouchOutside: false,
+                ).show(),
+                // setState(() {
+                //   canJoin = false;
+                // })
               });
 // update the state of the board when the server notifies the client of a move
       socket.on('updateBoard', (data) {
@@ -339,13 +384,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       desc: desc,
       // btnOkIcon: Icons.check_circle,
       btnOkOnPress: () {
-        Navigator.of(context).pushReplacement(
-          MaterialPageRoute(
-            builder: (context) => HomeScreen(
-              userOnDeviceID: widget.userOnDeviceID,
-            ),
-          ),
-        );
+        Navigator.of(context).pop();
       },
       btnOkText: 'Main Menu',
       dismissOnTouchOutside: false,
@@ -355,97 +394,96 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   @override
   Widget build(BuildContext context) {
     // print("setState called HotReload: PArent Screen");
-    return canJoin
-        ? Container(
-            height: MediaQuery.of(context).size.height / 1.2,
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                // TimerWidget(
-                //   key: _opponentKey,
-                //   isColorWhite: !isPlayerWhite,
-                // ),
-                opponentID == null
-                    ? const UserWidget(
-                        username: "computer",
-                        profilePicURL:
-                            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
-                    : buildUserWidget(opponentID),
-                const SizedBox(height: 10),
-                // ChessBoard(
-                //   size: MediaQuery.of(context).size.height * 0.5,
-                //   enableUserMoves: isPlayerTurn,
-                //   boardOrientation:
-                //       isPlayerWhite ? PlayerColor.white : PlayerColor.black,
-                //   boardColor: BoardColor.darkBrown,
-                //   controller: _controller,
-                //   onMove: () {
-                //     // stop the timer of the player who made the move and start the timer of the other player
-                //     // _myKey.currentState?.stopTimer();
-                //     // _opponentKey.currentState?.startTimer();
+    return Container(
+      height: MediaQuery.of(context).size.height / 1.2,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          // TimerWidget(
+          //   key: _opponentKey,
+          //   isColorWhite: !isPlayerWhite,
+          // ),
+          opponentID == null
+              ? const UserWidget(
+                  username: "computer",
+                  profilePicURL:
+                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
+              : buildUserWidget(opponentID),
+          const SizedBox(height: 10),
+          // ChessBoard(
+          //   size: MediaQuery.of(context).size.height * 0.5,
+          //   enableUserMoves: isPlayerTurn,
+          //   boardOrientation:
+          //       isPlayerWhite ? PlayerColor.white : PlayerColor.black,
+          //   boardColor: BoardColor.darkBrown,
+          //   controller: _controller,
+          //   onMove: () {
+          //     // stop the timer of the player who made the move and start the timer of the other player
+          //     // _myKey.currentState?.stopTimer();
+          //     // _opponentKey.currentState?.startTimer();
 
-                //     if (!widget.comp) {
-                //       String currPGN = "";
-                //       for (String? s in _controller.getSan()) {
-                //         currPGN += (s ?? "") + " ";
-                //       }
-                //       print(currPGN);
+          //     if (!widget.comp) {
+          //       String currPGN = "";
+          //       for (String? s in _controller.getSan()) {
+          //         currPGN += (s ?? "") + " ";
+          //       }
+          //       print(currPGN);
 
-                //       socket.emit('moved', currPGN);
+          //       socket.emit('moved', currPGN);
 
-                //       // check if the player is in checkmate
-                //       if (_controller.isCheckMate()) {
-                //         socket
-                //             .emit("checkmate", {'checkmate ho gya hai bhai'});
-                //       }
-                //       // check stalemate
-                //       else if (_controller.isStaleMate()) {
-                //         socket
-                //             .emit("stalemate", {'stalemate ho gya hai bhai'});
-                //       }
-                //       // check draw
-                //       else if (_controller.isDraw() ||
-                //           _controller.isInsufficientMaterial() ||
-                //           _controller.isThreefoldRepetition()) {
-                //         socket.emit("draw", {'draw ho gya hai bhai'});
-                //       }
+          //       // check if the player is in checkmate
+          //       if (_controller.isCheckMate()) {
+          //         socket
+          //             .emit("checkmate", {'checkmate ho gya hai bhai'});
+          //       }
+          //       // check stalemate
+          //       else if (_controller.isStaleMate()) {
+          //         socket
+          //             .emit("stalemate", {'stalemate ho gya hai bhai'});
+          //       }
+          //       // check draw
+          //       else if (_controller.isDraw() ||
+          //           _controller.isInsufficientMaterial() ||
+          //           _controller.isThreefoldRepetition()) {
+          //         socket.emit("draw", {'draw ho gya hai bhai'});
+          //       }
 
-                //       // if the player has made a move, then it is not their turn anymore
-                //       setState(() {
-                //         isPlayerTurn = false;
-                //       });
-                //     } else {
-                //       setState(() {
-                //         isPlayerTurn = false;
-                //       });
-                //       getMoveFromEngine();
-                //       // getEngineMove(_controller.getFen());
-                //       // TODO: Set up engine move functionality
+          //       // if the player has made a move, then it is not their turn anymore
+          //       setState(() {
+          //         isPlayerTurn = false;
+          //       });
+          //     } else {
+          //       setState(() {
+          //         isPlayerTurn = false;
+          //       });
+          //       getMoveFromEngine();
+          //       // getEngineMove(_controller.getFen());
+          //       // TODO: Set up engine move functionality
 
-                //     }
-                //   },
-                // ),
-                ChessBoard2(
-                  userOnDeviceID: widget.userOnDeviceID,
-                  showDialog: informUser,
-                  chessKey: ck,
-                  boardOrientation: isPlayerWhite ? WHITE : BLACK,
-                  gc: _controller,
-                  canMove: isPlayerTurn,
-                  onMove: communicateMoves,
-                  vsComp: widget.comp,
-                ),
-                const SizedBox(height: 10),
-                // TimerWidget(
-                //   key: _myKey,
-                //   isColorWhite: isPlayerWhite,
-                // ),
-                buildUserWidget(widget.userOnDeviceID),
-              ],
-            ),
-          )
-        : const RoomFullScreen();
+          //     }
+          //   },
+          // ),
+          ChessBoard2(
+            userOnDeviceID: widget.userOnDeviceID,
+            showDialog: informUser,
+            chessKey: ck,
+            boardOrientation: isPlayerWhite ? WHITE : BLACK,
+            gc: _controller,
+            canMove: isPlayerTurn,
+            onMove: communicateMoves,
+            vsComp: widget.comp,
+          ),
+          const SizedBox(height: 10),
+          // TimerWidget(
+          //   key: _myKey,
+          //   isColorWhite: isPlayerWhite,
+          // ),
+          buildUserWidget(widget.userOnDeviceID),
+        ],
+      ),
+    );
+    // : const RoomFullScreen();
   }
 }
