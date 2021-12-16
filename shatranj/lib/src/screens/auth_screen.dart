@@ -119,7 +119,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   fit: BoxFit.cover,
                   height: MediaQuery.of(context).size.height / 2.3,
                   width: double.infinity,
-                  image: const AssetImage("graphics/poster.jpg"),
+                  image: const AssetImage("graphics/poster2.jpg"),
                 ),
               ),
             ],
