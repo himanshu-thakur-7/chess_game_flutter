@@ -617,7 +617,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
 //           print("connection success");
           if (mounted) {
             t = Timer(
-                Duration(seconds: 17),
+                Duration(seconds: 30),
                 () => {
                       print("yo bro"),
                       // socket.emit('game abandoned', "opponent did'nt join"),
@@ -637,7 +637,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               title: 'Room Joined.',
               desc: 'Waiting for other player...',
               headerAnimationLoop: false,
-              autoHide: const Duration(seconds: 12),
+              autoHide: const Duration(seconds: 28),
               useRootNavigator: true,
               dismissOnTouchOutside: false,
               dismissOnBackKeyPress: false,
@@ -706,7 +706,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                       //   canJoin = false;
                       // })
                       AwesomeDialog(
-                        context: context,
+                        context: widget.context,
                         animType: AnimType.SCALE,
                         headerAnimationLoop: true,
                         dialogType: DialogType.ERROR,
@@ -973,6 +973,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         showCloseIcon: false,
         title: message,
         desc: desc,
+
         // btnOkIcon: Icons.check_circle,
         btnOkOnPress: () {
           Navigator.of(widget.context).pop();

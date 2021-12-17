@@ -157,7 +157,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     style: TextStyle(
                                         color: Colors.white,
                                         fontWeight: FontWeight.bold,
-                                        fontSize: 30),
+                                        fontSize: 26),
                                   ),
                                 ),
                                 Container(
@@ -201,7 +201,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 DashboardWidget(
-                                  imgScale: 0.28,
+                                  imgScale: 0.24,
                                   flexVal: 1,
                                   widget: widget,
                                   onTap: () {
@@ -221,7 +221,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   title: "Play vs Robot",
                                 ),
                                 DashboardWidget(
-                                    imgScale: 0.28,
+                                    imgScale: 0.24,
                                     flexVal: 1,
                                     widget: widget,
                                     onTap: () {
@@ -343,7 +343,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             style: TextStyle(
                                                 color: Colors.white,
                                                 fontSize: 20,
-                                                fontWeight: FontWeight.normal),
+                                                fontWeight: FontWeight.w600),
                                           ),
                                         ],
                                       ),
@@ -363,7 +363,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   imgURL: "graphics/learnChess.svg",
                                   title: "Chess Lessons",
                                   flexVal: 2,
-                                  imgScale: 0.28,
+                                  imgScale: 0.24,
                                 ),
                                 Expanded(
                                   flex: 1,
