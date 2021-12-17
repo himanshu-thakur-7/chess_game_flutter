@@ -550,8 +550,8 @@ GlobalKey<ChessBoard2State> ck = GlobalKey<ChessBoard2State>();
 GlobalKey<TimerWidgetState> _myKey = GlobalKey();
 GlobalKey<TimerWidgetState> _opponentKey = GlobalKey();
 
-bool isPlayerWhite = true;
-bool isPlayerTurn = true;
+bool? isPlayerWhite;
+bool? isPlayerTurn;
 
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
@@ -584,7 +584,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   var opponentID;
   // final ChessBoardController _controller = ChessBoardController();
   var t = Timer(Duration(seconds: 1000000000000), () {});
-//   var dialog;
+  var dialog;
   Widget buildUserWidget(String userID) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -615,34 +615,36 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           //  if (lock == 0) {
 //           print("Param: $_");
 //           print("connection success");
-          if (lock == 1) {
+          if (mounted) {
             t = Timer(
-                Duration(seconds: 7),
+                Duration(seconds: 17),
                 () => {
                       print("yo bro"),
-                      socket.emit('game abandoned', "opponent did'nt join"),
+                      // socket.emit('game abandoned', "opponent did'nt join"),
+                      // socket.emit('exit room'),
                       Navigator.of(widget.context)
                           .pop('Sorry! No opponent joined'),
-                      socket.disconnect(),
+                      // socket.disconnect(),
                       print("srry bro"),
                       t.cancel(),
                     });
             lock = 0;
+
+            dialog = AwesomeDialog(
+              context: context,
+              animType: AnimType.SCALE,
+              dialogType: DialogType.INFO,
+              title: 'Room Joined.',
+              desc: 'Waiting for other player...',
+              headerAnimationLoop: false,
+              autoHide: const Duration(seconds: 12),
+              useRootNavigator: true,
+              dismissOnTouchOutside: false,
+              dismissOnBackKeyPress: false,
+              // btnOkOnPress: () {},
+            );
+            dialog.show();
           }
-//           dialog = AwesomeDialog(
-//             context: context,
-//             animType: AnimType.SCALE,
-//             dialogType: DialogType.INFO,
-//             title: 'Room Joined.',
-//             desc: 'Waiting for other player...',
-//             headerAnimationLoop: false,
-//             autoHide: const Duration(seconds: 2),
-//             useRootNavigator: true,
-//             dismissOnTouchOutside: false,
-//             dismissOnBackKeyPress: false,
-//             // btnOkOnPress: () {},
-//           );
-//           dialog.show();
 //           lock = 1;
 //            }
           if (widget.roomID != null) {
@@ -657,9 +659,10 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         socket.on(
             'startGame',
             (playerOneID) => {
-                  t.cancel(),
                   if (mounted)
                     {
+                      t.cancel(),
+                      dialog.dismiss(),
                       setState(() {}),
                     },
                   _controller.emitState(),
@@ -699,9 +702,28 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   print("Room ID FULL: $rid"),
                   if (mounted)
                     {
-                      setState(() {
-                        canJoin = false;
-                      })
+                      // setState(() {
+                      //   canJoin = false;
+                      // })
+                      AwesomeDialog(
+                        context: context,
+                        animType: AnimType.SCALE,
+                        headerAnimationLoop: true,
+                        dialogType: DialogType.ERROR,
+                        showCloseIcon: false,
+                        title: "Room is full",
+                        desc: 'Sorry.. Room is occupied. Please try later.',
+                        onDissmissCallback: (type) => {
+                          print("callback called"),
+                          Navigator.of(context).pop()
+                        },
+                        // btnOkIcon: Icons.check_circle,
+                        btnOkOnPress: () {
+                          // Navigator.of(context).pop();
+                        },
+                        btnOkText: 'Main Menu',
+                        dismissOnTouchOutside: false,
+                      ).show(),
                     }
                   else
                     {
@@ -857,6 +879,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     super.initState();
     // _controller = GameController();
     _controller = GameController();
+    isPlayerTurn = true;
+    isPlayerWhite = true;
     // socket = IO.io('/');
 
     lock = 0;
@@ -924,6 +948,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
       }
 
       socket.emit("draw", reason);
+    } else {
+      print("threefold rep: ${_controller.isThreeFoldRep()}");
     }
     setState(() {
       isPlayerTurn = false;
@@ -949,13 +975,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
         desc: desc,
         // btnOkIcon: Icons.check_circle,
         btnOkOnPress: () {
-          Navigator.of(widget.context).pushReplacement(
-            MaterialPageRoute(
-              builder: (context) => HomeScreen(
-                userOnDeviceID: widget.userOnDeviceID,
-              ),
-            ),
-          );
+          Navigator.of(widget.context).pop();
         },
         btnOkText: 'Main Menu',
         dismissOnTouchOutside: false,
@@ -1044,9 +1064,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             userOnDeviceID: widget.userOnDeviceID,
             showDialog: informUser,
             chessKey: ck,
-            boardOrientation: isPlayerWhite ? WHITE : BLACK,
+            boardOrientation: isPlayerWhite! ? WHITE : BLACK,
             gc: _controller,
-            canMove: isPlayerTurn,
+            canMove: isPlayerTurn!,
             onMove: communicateMoves,
             vsComp: widget.comp,
           ),

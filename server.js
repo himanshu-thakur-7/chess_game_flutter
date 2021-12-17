@@ -35,17 +35,21 @@ io.on('connection', function (socket) {
             roomsInfo[roomID].push(socket.id);
             console.log('Player Count:', roomsInfo[roomID].length);
             socket.join(roomID);
+
+            console.log("Room status:", io.sockets.adapter.rooms);
           }
 
           if (roomsInfo[roomID].length === 2) {
 
             console.log('Player Count:', roomsInfo[roomID].length);
             // socket.join(roomID);
+            console.log(socket.id);
+            // console.log(io.sockets.adapter.rooms);
             io.to(roomID).emit('startGame', socket.id);
           }
         }
         socket.on("loadUser", (userID) => {
-          console.log("User ID:", userID);
+          // console.log("User ID:", userID);
           socket.to(roomID).emit('displayUser', userID);
         })
       }
@@ -85,13 +89,16 @@ io.on('connection', function (socket) {
         console.log('exiting room');
         // roomsInfo[roomID]--;
         roomsInfo[roomID] = roomsInfo[roomID].filter(item => item !== socket.id);
-
+        console.log(roomsInfo[roomID]);
         if (roomsInfo[roomID].length === 0) {
           delete roomsInfo[roomID];
           console.log("Room deleted");
 
         }
+
+        // console.log("Before removal", io.sockets.adapter.rooms);
         socket.leave(roomID);
+        console.log("After removal", io.sockets.adapter.rooms);
         // socket.disconnect(true);
         socket.disconnect(true);
 

@@ -343,21 +343,27 @@ class ChessBoard2State extends State<ChessBoard2> {
       setState(() {
         widget.canMove = false;
       });
-      widget.showDialog(
-          message: 'Stalemate!',
-          dialogueType: DialogType.WARNING,
-          animType: AnimType.BOTTOMSLIDE,
-          desc: 'No valid moves possible');
+      if (widget.vsComp! == true) {
+        widget.showDialog(
+            message: 'Stalemate!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.BOTTOMSLIDE,
+            desc: 'No valid moves possible');
+      }
     }
-    if (widget.gc.isDraw()) {
-      setState(() {
-        widget.canMove = false;
-      });
-      widget.showDialog(
-          message: 'Draw!',
-          dialogueType: DialogType.WARNING,
-          animType: AnimType.TOPSLIDE,
-          desc: '');
+    if (widget.gc.isDraw() ||
+        widget.gc.isInsuffMaterial() ||
+        widget.gc.isThreeFoldRep()) {
+      // setState(() {
+      //   widget.canMove = false;
+      // });
+      if (widget.vsComp! == true) {
+        widget.showDialog(
+            message: 'Draw!',
+            dialogueType: DialogType.WARNING,
+            animType: AnimType.TOPSLIDE,
+            desc: '');
+      }
     }
   }
 
