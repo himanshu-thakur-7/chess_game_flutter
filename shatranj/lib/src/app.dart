@@ -22,6 +22,7 @@ class App extends StatelessWidget {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          fontFamily: 'Poppins',
           inputDecorationTheme: ThemeData.dark().inputDecorationTheme,
           primaryColor: const Color.fromRGBO(34, 0, 53, 1.0),
           accentColor: const Color.fromRGBO(251, 209, 76, 1.0),
