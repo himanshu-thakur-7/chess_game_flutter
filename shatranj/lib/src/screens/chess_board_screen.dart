@@ -18,8 +18,16 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
   @override
   void initState() {
     // TODO: implement initState
+    print("chess screen initiated");
     super.initState();
     print("vsengine: ${widget.comp}");
+  }
+
+  @override
+  void dispose() {
+    print("chess screen disposed");
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -44,6 +52,7 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
               ),
             ),
             ChessBoardWidget(
+              context: context,
               comp: this.widget.comp,
               roomID: widget.roomID,
               userOnDeviceID: widget.userOnDeviceID,
