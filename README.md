@@ -7,7 +7,7 @@ A chess game made in flutter with online multiplayer support using nodejs and so
 * Chess Lessons From GothamChess Youtube Channel
 
 ## TechStack:
- <img src="https://user-images.githubusercontent.com/61612477/146635957-065ec652-63fd-43b0-9bac-a3c26501763e.png" width="20%" height="20%"> <img src="https://user-images.githubusercontent.com/61612477/146635958-3488fc59-058f-484a-a6c9-e59af06fe80c.png" width="20%" height="20%"> <img src="https://user-images.githubusercontent.com/61612477/146635462-afbd1b3e-948d-4912-8b7a-49fd74d23623.png" width="20%" height="20%"> <img src="https://user-images.githubusercontent.com/61612477/146635954-0256eb51-bc83-4332-ad3b-caf825fe02d4.png" width="20%" height="20%">
+ <img src="https://user-images.githubusercontent.com/61612477/146635957-065ec652-63fd-43b0-9bac-a3c26501763e.png" width="22%" height="22%"> <img src="https://user-images.githubusercontent.com/61612477/146635958-3488fc59-058f-484a-a6c9-e59af06fe80c.png" width="22%" height="22%"> <img src="https://user-images.githubusercontent.com/61612477/146635462-afbd1b3e-948d-4912-8b7a-49fd74d23623.png" width="22%" height="22%"> <img src="https://user-images.githubusercontent.com/61612477/146635954-0256eb51-bc83-4332-ad3b-caf825fe02d4.png" width="22%" height="22%">
 
 
 ## ScreenShots:
