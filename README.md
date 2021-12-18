@@ -13,7 +13,6 @@ A chess game made in flutter with online multiplayer support using nodejs and so
 * Firebase
 
 ## ScreenShots:
-<img width="604" height="604" src="https://user-images.githubusercontent.com/61612477/146634450-cd1307c1-2180-4113-83f2-2241ba5879f6.jpg">
-
+<img width="104" height="604" src="https://user-images.githubusercontent.com/61612477/146634450-cd1307c1-2180-4113-83f2-2241ba5879f6.jpg">
 
 
