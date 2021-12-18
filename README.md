@@ -11,7 +11,7 @@ A chess game made in flutter with online multiplayer support using nodejs and so
 
 * Nodejs <img src="https://user-images.githubusercontent.com/61612477/146635361-328b81ab-55ff-45db-a936-8122d5e25348.png">
 
-* Socket.io <img src="https://user-images.githubusercontent.com/61612477/146635462-afbd1b3e-948d-4912-8b7a-49fd74d23623.png" width="100" height="100">
+* Socket.io <img src="https://user-images.githubusercontent.com/61612477/146635462-afbd1b3e-948d-4912-8b7a-49fd74d23623.png" width="20" height="20">
 
 * Firebase <img src="https://user-images.githubusercontent.com/61612477/146635472-8ee7cbfc-7f43-4375-97f4-2e47d7707d3b.png">
 
