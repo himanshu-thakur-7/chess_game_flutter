@@ -3,6 +3,9 @@
 <!-- # Shatranj -->
 ### Shatranj is a chess game made in flutter with online multiplayer support with help of nodejs and socket.io & a firebase powered backend 💛
 
+## Inspiration
+The inspiration for the UI design was taken from dribble: <a href="https://dribbble.com/shots/15412582-Chess-App">Design</a>
+
 ## Features
 * 2 Game Play Options : vs Robot (AI) or vs Friend (Online)
 * Win/Loss Stats analysis 
