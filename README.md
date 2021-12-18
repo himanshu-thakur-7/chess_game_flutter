@@ -9,7 +9,7 @@
 * Chess Lessons From GothamChess Youtube Channel <a href="https://www.youtube.com/c/GothamChess"> <img src="https://user-images.githubusercontent.com/61612477/146636671-a3b7565e-1693-4f0e-9f1d-a03ee8e7cc42.png" width="4%" height="4%"> </a>
 
 ## TechStack:
- <kbd><img src="https://user-images.githubusercontent.com/61612477/146635957-065ec652-63fd-43b0-9bac-a3c26501763e.png" width="22%" height="22%"></kbd> <kbd><img src="https://user-images.githubusercontent.com/61612477/146635958-3488fc59-058f-484a-a6c9-e59af06fe80c.png" width="22%" height="22%"></kbd> <kbd><img src="https://user-images.githubusercontent.com/61612477/146642299-f45a0788-5aec-445d-a9c7-7eb2ff78e289.png" width="22%" height="22%"></kbd> <kbd><img src="https://user-images.githubusercontent.com/61612477/146635954-0256eb51-bc83-4332-ad3b-caf825fe02d4.png" width="22%" height="22%"></kbd>
+ <img src="https://user-images.githubusercontent.com/61612477/146635957-065ec652-63fd-43b0-9bac-a3c26501763e.png" width="22%" height="22%"><img src="https://user-images.githubusercontent.com/61612477/146635958-3488fc59-058f-484a-a6c9-e59af06fe80c.png" width="22%" height="22%"> <img src="https://user-images.githubusercontent.com/61612477/146642299-f45a0788-5aec-445d-a9c7-7eb2ff78e289.png" width="22%" height="22%"> <img src="https://user-images.githubusercontent.com/61612477/146635954-0256eb51-bc83-4332-ad3b-caf825fe02d4.png" width="22%" height="22%">
 
 
 ## ScreenShots:
