@@ -7,7 +7,8 @@ A chess game made in flutter with online multiplayer support using nodejs and so
 * Chess Lessons From GothamChess Youtube Channel
 
 ## TechStack:
-* Flutter  <a href="https://icons8.com/icon/7I3BjCqe9rjG/flutter">Flutter icon by Icons8</a>
+* Flutter ![icons8-flutter-48](https://user-images.githubusercontent.com/61612477/146635328-70450345-60be-40b6-994f-1f42f39ee61e.png)
+
 * Nodejs
 * Socket.io
 * Firebase
