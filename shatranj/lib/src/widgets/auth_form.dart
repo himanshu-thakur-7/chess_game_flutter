@@ -3,6 +3,7 @@ import 'dart:io';
 import '../widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import "package:email_validator/email_validator.dart";
 
 class AuthForm extends StatefulWidget {
   final bool isLoading;
@@ -92,7 +93,7 @@ class _AuthFormState extends State<AuthForm> {
                       validator: (value) {
                         if (value == null ||
                             value.isEmpty ||
-                            !value.contains('@')) {
+                            EmailValidator.validate(value) == false) {
                           return "Please enter a valid email address";
                         }
                         return null;

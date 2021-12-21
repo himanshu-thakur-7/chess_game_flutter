@@ -31,16 +31,15 @@ dependencies:
   bishop: ^0.3.0
   cloud_firestore: ^3.1.0
   cupertino_icons: ^1.0.2
-  fl_chart: ^0.40.6
+  email_validator: ^2.0.1
   firebase_auth: ^3.2.0
   firebase_core: ^1.10.0
   firebase_storage: ^10.1.0
+  fl_chart: ^0.40.6
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.0
   flutter_chess_board: ^1.0.0+3
-  
-  # flutter_svg: ^0.23.0+1
   http: ^0.13.4
   image_picker: ^0.8.4+4
   path: ^1.8.0
@@ -82,7 +81,7 @@ flutter:
         - asset: fonts/Poppins-Italic.ttf
           style: italic
         - asset: fonts/Poppins-Bold.ttf
-          weight: 700  
+          weight: 700
   #   - family: Trajan Pro
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf

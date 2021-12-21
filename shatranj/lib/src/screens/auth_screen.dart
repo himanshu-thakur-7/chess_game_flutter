@@ -86,8 +86,11 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } catch (error) {
+      List<String> components = error.toString().split(']');
+      String message = components[1];
       print("inside catch block");
-      print(error);
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(backgroundColor: Colors.amber[700], content: Text(message)));
 
       setState(() {
         _isLoading = false;
