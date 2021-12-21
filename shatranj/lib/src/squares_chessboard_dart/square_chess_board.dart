@@ -101,9 +101,10 @@ class ChessBoard2State extends State<ChessBoard2> {
                     size: state.size,
                     onMove: onMove,
                     moves: state.moves,
-                    // canMove: widget.vsComp! ? state.canMove : widget.canMove!,
-                    canMove: widget.vsComp! == true ? true : widget.canMove,
-                    // canMove: true,
+                    canMove: widget.vsComp! == true
+                        ? true
+                        : widget.canMove, // working
+                    // canMove: true, // testing
                     draggable: false,
                   );
                 },

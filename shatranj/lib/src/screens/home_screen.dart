@@ -71,33 +71,35 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Expanded(
-                          flex: 4,
+                          flex: 7,
                           child: Container(
-                              margin: const EdgeInsets.only(right: 0),
+                              // width: double.infinity,
+                              // margin: const EdgeInsets.only(right: 0),
                               child: Row(
-                                children: [
-                                  CircleAvatar(
-                                    radius: 25,
-                                    backgroundImage: NetworkImage(profilePicURL ??
-                                        "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                            children: [
+                              CircleAvatar(
+                                radius: 19,
+                                backgroundImage: NetworkImage(profilePicURL ??
+                                    "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                              ),
+                              Container(
+                                // width: double.infinity,
+                                margin: EdgeInsets.only(left: 10),
+                                child: FittedBox(
+                                  fit: BoxFit.contain,
+                                  child: Text(
+                                    "Hi ${userName ?? ""}!",
+                                    style: const TextStyle(
+                                        fontSize: 20,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.green),
                                   ),
-                                  Container(
-                                    margin: EdgeInsets.only(left: 10),
-                                    child: FittedBox(
-                                      fit: BoxFit.contain,
-                                      child: Text(
-                                        "Hi ${userName ?? ""}!",
-                                        style: const TextStyle(
-                                            fontSize: 20,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.green),
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ))),
+                                ),
+                              ),
+                            ],
+                          ))),
                       Expanded(
-                        flex: 3,
+                        flex: 5,
                         child: Container(
                           margin: const EdgeInsets.only(left: 120),
                           child: IconButton(

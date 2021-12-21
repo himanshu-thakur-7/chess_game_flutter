@@ -44,7 +44,6 @@ class APIService {
 
       print("From api service ${videosJson[3]}");
 
-      // fetch first eight videos from  playlist
       List<Video> videos = [];
       videosJson.forEach(
         (video) => videos.add(
