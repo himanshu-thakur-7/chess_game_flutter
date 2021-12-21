@@ -86,7 +86,7 @@ class _AuthScreenState extends State<AuthScreen> {
         _isLoading = false;
       });
     } catch (error) {
-      List<String> components = error.toString().split(']');
+      List<String> components = error.toString().split('] ');
       String message = components[1];
       print("inside catch block");
       ScaffoldMessenger.of(context).showSnackBar(
