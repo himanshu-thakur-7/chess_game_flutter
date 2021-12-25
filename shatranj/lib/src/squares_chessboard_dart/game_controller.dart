@@ -28,7 +28,9 @@ class GameController extends Cubit<GameState> {
   GameController() : super(GameState.initial());
   bishop.Engine? engine;
   bool vsEngine = false;
-
+  Map<String, int> fenCounter = {
+    'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq': 1
+  };
   void printInfo() {
     // print(game!.turn);
   }
@@ -150,7 +152,6 @@ class GameController extends Cubit<GameState> {
 
   void makeMove(Move move, {String? fen, bool? vsEngine, ChessBoard2? widget}) {
     // print(" Line 78 Move: $move");
-
     if (game == null) {
       // print("oops no game found yet... sorry!");
       return;
@@ -163,6 +164,15 @@ class GameController extends Cubit<GameState> {
       print('move $alg not found');
     else {
       game!.makeMove(m);
+      print(game!.fen);
+      String fen = game!.fen.split(" -")[0].trim();
+      print(fen);
+      if (fenCounter[fen] == null) {
+        fenCounter[fen] = 0;
+      }
+      fenCounter[fen] = fenCounter[fen]! + 1;
+      print("counter: ${fenCounter[fen]}");
+
       // print("Line 88 moved success!");
       emitState();
 
@@ -177,6 +187,16 @@ class GameController extends Cubit<GameState> {
   void makeMovePlayer(data) {
     // print(data);
     game!.loadFen(data["fen"]);
+
+    print(game!.fen);
+    String fen = game!.fen.split(" -")[0].trim();
+    print(fen);
+    if (fenCounter[fen] == null) {
+      fenCounter[fen] = 0;
+    }
+    fenCounter[fen] = fenCounter[fen]! + 1;
+    print("counter: ${fenCounter[fen]}");
+
     // print("Turn :${game!.turn}");
     BoardSize size = BoardSize(game!.size.h, game!.size.v);
     // bool canMove = game!.turn == WHITE || game!.turn == BLACK; // for pvp
@@ -256,8 +276,21 @@ class GameController extends Cubit<GameState> {
   }
 
   bool isThreeFoldRep() {
-    if (game!.repetition) {
-      return true;
+    if (vsEngine) {
+      if (game!.repetition) {
+        return true;
+      }
+      return false;
+    } else {
+      return checkRepetitionOnline();
+    }
+  }
+
+  bool checkRepetitionOnline() {
+    for (var v in fenCounter.values) {
+      if (v == 3) {
+        return true;
+      }
     }
     return false;
   }
