@@ -9,10 +9,10 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../widgets/dashboard_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  var userOnDeviceID;
-  HomeScreen({
+  final userOnDeviceID;
+  const HomeScreen({
     Key? key,
-    this.userOnDeviceID,
+    required this.userOnDeviceID,
   }) : super(key: key);
 
   @override
