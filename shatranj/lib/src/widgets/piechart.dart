@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:fl_chart/fl_chart.dart';
-import '../internals/indicator.dart';
+import 'indicator.dart';
 
 class StatsPieChart extends StatefulWidget {
   final int? wins;
