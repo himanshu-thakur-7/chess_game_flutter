@@ -25,8 +25,6 @@ class StatsPieChartState extends State<StatsPieChart> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.only(left: 30, top: 180, bottom: 10, right: 10),
-      // color: Colors.white,
-
       child: Column(
         children: [
           Expanded(

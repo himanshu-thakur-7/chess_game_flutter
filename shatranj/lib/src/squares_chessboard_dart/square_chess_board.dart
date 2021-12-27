@@ -1,7 +1,6 @@
 import 'package:awesome_dialog/awesome_dialog.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-// import 'package:bishop/bishop.dart' as bishop;
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squares/squares.dart';
 import 'game_controller.dart';
@@ -60,21 +59,17 @@ class ChessBoard2State extends State<ChessBoard2> {
 
   @override
   Widget build(BuildContext context) {
-    // print("canMove");
     print("setState called HotReload: Child Screen");
     return Center(
         key: widget.chessKey,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            // if (variant.hands) _hand(gc, BLACK),
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: BlocBuilder<GameController, GameState>(
                 bloc: widget.gc,
                 builder: (context, state) {
-                  // print("builder called");
-                  // print(state.moves);
                   return BoardController(
                     state: state.board
                         .copyWith(orientation: widget.boardOrientation),
@@ -101,10 +96,7 @@ class ChessBoard2State extends State<ChessBoard2> {
                     size: state.size,
                     onMove: onMove,
                     moves: state.moves,
-                    canMove: widget.vsComp! == true
-                        ? true
-                        : widget.canMove, // working
-                    // canMove: true, // testing
+                    canMove: widget.vsComp! == true ? true : widget.canMove,
                     draggable: false,
                   );
                 },
@@ -120,10 +112,6 @@ class ChessBoard2State extends State<ChessBoard2> {
   }
 
   void onMove(Move move) {
-    // print("hi");
-    widget.gc.printInfo();
-
-    // print("vsEngine: ${widget.vsComp}");
     widget.gc.makeMove(move, vsEngine: widget.vsComp, widget: widget);
 
     if (widget.vsComp! == false) {
@@ -171,9 +159,6 @@ class ChessBoard2State extends State<ChessBoard2> {
     if (widget.gc.isDraw() ||
         widget.gc.isInsuffMaterial() ||
         widget.gc.isThreeFoldRep()) {
-      // setState(() {
-      //   widget.canMove = false;
-      // });
       if (widget.vsComp! == true) {
         widget.showDialog(
             message: 'Draw!',

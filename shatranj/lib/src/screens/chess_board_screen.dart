@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../widgets/chess_board_main.dart';
-import '../squares_chessboard_dart/square_chess_board.dart';
 
 class ChessBoardScreen extends StatefulWidget {
   var userOnDeviceID;
@@ -17,7 +16,6 @@ class ChessBoardScreen extends StatefulWidget {
 class _ChessBoardScreenState extends State<ChessBoardScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     print("chess screen initiated");
     super.initState();
     print("vsengine: ${widget.comp}");
@@ -26,7 +24,6 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
   @override
   void dispose() {
     print("chess screen disposed");
-    // TODO: implement dispose
     super.dispose();
   }
 
@@ -34,10 +31,6 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
-      // appBar: AppBar(
-      //   backgroundColor: const Color.fromRGBO(0, 210, 211, 1.0),
-      //   title: const Text('Let\'s Play'),
-      // ),
       body: SingleChildScrollView(
         physics: NeverScrollableScrollPhysics(),
         child: Column(

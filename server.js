@@ -1,3 +1,5 @@
+const base64id = require('base64id');
+const { URL } = require('url');
 let roomsInfo = {};
 var server = require('http').createServer((req, res) => {
   res.end('I am connected');
@@ -22,7 +24,6 @@ io.on('connection', function (socket) {
           console.log(roomsInfo[roomID]);
         }
 
-        // roomsInfo[roomID].push(socket.id);
 
         if (roomsInfo[roomID].length == 2) {
           console.log("Intruder ID", socket.id);
@@ -42,14 +43,11 @@ io.on('connection', function (socket) {
           if (roomsInfo[roomID].length === 2) {
 
             console.log('Player Count:', roomsInfo[roomID].length);
-            // socket.join(roomID);
             console.log(socket.id);
-            // console.log(io.sockets.adapter.rooms);
             io.to(roomID).emit('startGame', socket.id);
           }
         }
         socket.on("loadUser", (userID) => {
-          // console.log("User ID:", userID);
           socket.to(roomID).emit('displayUser', userID);
         })
       }
@@ -76,15 +74,6 @@ io.on('connection', function (socket) {
         io.to(roomID).emit("Stalemate", "Stalemate bro!!");
 
       });
-
-      // socket.on('game abandoned', (reason) => {
-
-      //     roomsInfo[roomID]--;
-      //     socket.leave(roomID);
-      //     // socket.disconnect(true);
-      //     socket.close();
-
-      // });
       socket.on('exit room', (reason) => {
         console.log('exiting room');
         // roomsInfo[roomID]--;
@@ -95,13 +84,13 @@ io.on('connection', function (socket) {
           console.log("Room deleted");
 
         }
-
-        // console.log("Before removal", io.sockets.adapter.rooms);
         socket.leave(roomID);
         console.log("After removal", io.sockets.adapter.rooms);
-        // socket.disconnect(true);
         socket.disconnect(true);
 
+      })
+      socket.on("disconnect", () => {
+        console.log(socket.id, "disconnected");
       })
     }
 

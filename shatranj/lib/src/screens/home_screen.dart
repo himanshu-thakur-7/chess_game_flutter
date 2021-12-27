@@ -10,7 +10,6 @@ import '../widgets/dashboard_widget.dart';
 
 class HomeScreen extends StatefulWidget {
   var userOnDeviceID;
-  // var profilePic;
   HomeScreen({
     Key? key,
     this.userOnDeviceID,
@@ -63,7 +62,6 @@ class _HomeScreenState extends State<HomeScreen> {
             Container(
               height: MediaQuery.of(context).size.height,
               width: MediaQuery.of(context).size.width,
-              // margin: EdgeInsets.all(10),
               padding: EdgeInsets.all(10),
               child: Column(
                 children: [
@@ -71,11 +69,9 @@ class _HomeScreenState extends State<HomeScreen> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Expanded(
-                          flex: 7,
-                          child: Container(
-                              // width: double.infinity,
-                              // margin: const EdgeInsets.only(right: 0),
-                              child: Row(
+                        flex: 7,
+                        child: Container(
+                          child: Row(
                             children: [
                               CircleAvatar(
                                 radius: 19,
@@ -83,7 +79,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                     "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
                               ),
                               Container(
-                                // width: double.infinity,
                                 margin: EdgeInsets.only(left: 10),
                                 child: FittedBox(
                                   fit: BoxFit.contain,
@@ -97,7 +92,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                 ),
                               ),
                             ],
-                          ))),
+                          ),
+                        ),
+                      ),
                       Expanded(
                         flex: 5,
                         child: Container(
@@ -150,41 +147,41 @@ class _HomeScreenState extends State<HomeScreen> {
                       child: Row(
                         children: [
                           Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    ' Let\'s Become\n a New\n Chessmaster ',
-                                    style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 26),
-                                  ),
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  ' Let\'s Become\n a New\n Chessmaster ',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 26),
                                 ),
-                                Container(
-                                  padding: const EdgeInsets.only(
-                                    top: 8.0,
-                                  ),
-                                  child: ElevatedButton(
-                                      style: ButtonStyle(
-                                        backgroundColor:
-                                            MaterialStateProperty.all(
-                                          const Color.fromRGBO(
-                                              155, 26, 228, 1.0),
-                                        ),
+                              ),
+                              Container(
+                                padding: const EdgeInsets.only(
+                                  top: 8.0,
+                                ),
+                                child: ElevatedButton(
+                                    style: ButtonStyle(
+                                      backgroundColor:
+                                          MaterialStateProperty.all(
+                                        const Color.fromRGBO(155, 26, 228, 1.0),
                                       ),
-                                      onPressed: () => {
-                                            print("puzzle screen"),
-                                          },
-                                      child: const Text(
-                                        "Let's go",
-                                        style: TextStyle(
-                                            fontSize: 15,
-                                            fontWeight: FontWeight.bold),
-                                      )),
-                                )
-                              ]),
+                                    ),
+                                    onPressed: () => {
+                                          print("puzzle screen"),
+                                        },
+                                    child: const Text(
+                                      "Let's go",
+                                      style: TextStyle(
+                                          fontSize: 15,
+                                          fontWeight: FontWeight.bold),
+                                    )),
+                              )
+                            ],
+                          ),
                         ],
                       ),
                     ),

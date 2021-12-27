@@ -2,7 +2,6 @@ import 'dart:io';
 
 import '../widgets/user_image_picker.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_core/firebase_core.dart';
 import "package:email_validator/email_validator.dart";
 
 class AuthForm extends StatefulWidget {
@@ -65,7 +64,6 @@ class _AuthFormState extends State<AuthForm> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    // await Firebase.initializeApp();
   }
 
   @override
