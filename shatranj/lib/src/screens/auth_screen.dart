@@ -34,12 +34,15 @@ class _AuthScreenState extends State<AuthScreen> {
       setState(() {
         _isLoading = true;
       });
+      // if the user wants to login
       if (isLogin) {
         authResult = await _auth.signInWithEmailAndPassword(
           email: email!,
           password: password!,
         );
-      } else {
+      }
+      // if the user wants to signup
+      else {
         authResult = await _auth.createUserWithEmailAndPassword(
           email: email!,
           password: password!,
@@ -56,6 +59,7 @@ class _AuthScreenState extends State<AuthScreen> {
 
         final url = await ref.getDownloadURL();
 
+        // add user to the database
         await FirebaseFirestore.instance
             .collection('users')
             .doc(authResult.user?.uid)
@@ -69,7 +73,9 @@ class _AuthScreenState extends State<AuthScreen> {
           'total': 0,
         }).then((value) => print("database updated"));
       }
-    } on PlatformException catch (err) {
+    }
+    // error handling
+    on PlatformException catch (err) {
       print("inside platform exception block");
       var message = "An error Occured, Please check your credentials";
 
@@ -113,6 +119,7 @@ class _AuthScreenState extends State<AuthScreen> {
                 isLoading: _isLoading,
               ),
             ),
+            // Rendering a Custom clipped image
             ClipPath(
               clipper: CurveClipper(),
               child: Image(

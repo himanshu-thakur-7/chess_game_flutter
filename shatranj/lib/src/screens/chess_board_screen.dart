@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import '../widgets/chess_board_main.dart';
 
 class ChessBoardScreen extends StatefulWidget {
-  var userOnDeviceID;
+  final String? userOnDeviceID;
   final String? roomID;
   final bool comp;
-  ChessBoardScreen(
+  const ChessBoardScreen(
       {Key? key, this.roomID, this.userOnDeviceID, required this.comp})
       : super(key: key);
 
@@ -16,6 +16,7 @@ class ChessBoardScreen extends StatefulWidget {
 class _ChessBoardScreenState extends State<ChessBoardScreen> {
   @override
   void initState() {
+    // initializing the state of widget
     print("chess screen initiated");
     super.initState();
     print("vsengine: ${widget.comp}");
@@ -23,6 +24,7 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
 
   @override
   void dispose() {
+    // disposing the state of widget
     print("chess screen disposed");
     super.dispose();
   }
@@ -32,12 +34,12 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
     return Scaffold(
       backgroundColor: Theme.of(context).primaryColor,
       body: SingleChildScrollView(
-        physics: NeverScrollableScrollPhysics(),
+        physics: const NeverScrollableScrollPhysics(),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Container(
-              margin: EdgeInsets.only(top: 30),
+              margin: const EdgeInsets.only(top: 30),
               child: Image.asset(
                 'graphics/horse.png',
                 width: MediaQuery.of(context).size.width * 0.22,
@@ -46,7 +48,7 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
             ),
             ChessBoardWidget(
               context: context,
-              comp: this.widget.comp,
+              comp: widget.comp,
               roomID: widget.roomID,
               userOnDeviceID: widget.userOnDeviceID,
             ),

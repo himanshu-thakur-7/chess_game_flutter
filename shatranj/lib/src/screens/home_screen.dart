@@ -9,7 +9,7 @@ import 'package:awesome_dialog/awesome_dialog.dart';
 import '../widgets/dashboard_widget.dart';
 
 class HomeScreen extends StatefulWidget {
-  final userOnDeviceID;
+  final String? userOnDeviceID;
   const HomeScreen({
     Key? key,
     required this.userOnDeviceID,
@@ -20,15 +20,15 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  var profilePicURL;
-  var userName;
+  String? profilePicURL;
+  String? userName;
 
   var roomID;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
+    //  Get the current user information (username and profile picture )
     final snapshots = FirebaseFirestore.instance
         .collection('users')
         .doc(widget.userOnDeviceID)
@@ -47,52 +47,57 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void dispose() {
     _controller.dispose();
-    // TODO: implement dispose
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
+      resizeToAvoidBottomInset:
+          false, // this is set so as to avoid overflow of contents on screen in situation like keyboard overlay
       backgroundColor: Theme.of(context).primaryColor,
       body: SafeArea(
+        // this ensures that all the content on the screen is inside area visible to the user
         child: Stack(
           children: [
             Container(
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context)
+                  .size
+                  .height, // setting the dimensions of container wrt dimensions of the screen
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
+                // Main Wrapper Column in UI
                 children: [
                   Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
+                    mainAxisAlignment: MainAxisAlignment
+                        .end, // aligning all children inside Row to the right / end of the row
                     children: [
                       Expanded(
-                        flex: 7,
-                        child: Container(
-                          child: Row(
-                            children: [
-                              CircleAvatar(
-                                radius: 19,
-                                backgroundImage: NetworkImage(profilePicURL ??
-                                    "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
-                              ),
-                              Container(
-                                margin: EdgeInsets.only(left: 10),
-                                child: FittedBox(
-                                  fit: BoxFit.contain,
-                                  child: Text(
-                                    "Hi ${userName ?? ""}!",
-                                    style: const TextStyle(
-                                        fontSize: 20,
-                                        fontWeight: FontWeight.bold,
-                                        color: Colors.green),
-                                  ),
+                        flex:
+                            7, // this child of row will take 7/12th of total space available in row (since for other child flex = 5.. hence total = 7+5 = 12)
+                        child: Row(
+                          children: [
+                            CircleAvatar(
+                              radius: 19,
+                              backgroundImage: NetworkImage(
+                                  profilePicURL ?? //if somehow the profilePic url could not be loaded.. load from this back up url
+                                      "https://cdn.iconscout.com/icon/free/png-256/face-1659511-1410033.png"),
+                            ),
+                            Container(
+                              margin: const EdgeInsets.only(left: 10),
+                              child: FittedBox(
+                                fit: BoxFit.contain,
+                                child: Text(
+                                  "Hi ${userName ?? ""}!", // interpolating the user name to greet
+                                  style: const TextStyle(
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.green),
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                       Expanded(
@@ -105,6 +110,9 @@ class _HomeScreenState extends State<HomeScreen> {
                               color: Colors.green,
                             ),
                             onPressed: () => {
+                              // event handle on pressing the icon
+
+                              // user will be displayed a dialog box asking whether or not to log out
                               AwesomeDialog(
                                 context: context,
                                 dialogType: DialogType.QUESTION,
@@ -120,9 +128,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                 showCloseIcon: true,
                                 btnCancelOnPress: () {},
                                 btnOkOnPress: () async {
-                                  await FirebaseAuth.instance.signOut();
+                                  await FirebaseAuth.instance
+                                      .signOut(); // signing out the user
                                   Navigator.pushReplacement(
-                                      context,
+                                      context, // redirecting the user to the AuthScreen
                                       MaterialPageRoute(
                                           builder: (context) =>
                                               const AuthScreen()));
@@ -135,6 +144,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ],
                   ),
                   Expanded(
+                    // 2nd Child of Main UI Wrapper
                     flex: 6,
                     child: Container(
                       margin: const EdgeInsets.symmetric(
@@ -171,7 +181,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                       ),
                                     ),
                                     onPressed: () => {
-                                          print("puzzle screen"),
+                                          print(""),
+                                          // Future Prospect of adding a Chess puzzle  feature
                                         },
                                     child: const Text(
                                       "Let's go",
@@ -187,6 +198,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
+                    //3rd Child of the main UI wrapper
                     flex: 7,
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
@@ -200,6 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 DashboardWidget(
+                                  // Play vs Robot Card
                                   imgScale: 0.24,
                                   flexVal: 1,
                                   widget: widget,
@@ -220,10 +233,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                   title: "Play vs Robot",
                                 ),
                                 DashboardWidget(
+                                    // Play vs Friend Card
                                     imgScale: 0.24,
                                     flexVal: 1,
                                     widget: widget,
                                     onTap: () {
+                                      // Prompt the user to enter some user ID to join or start a new game online
+
                                       AwesomeDialog(
                                         dismissOnTouchOutside: false,
                                         context: context,
@@ -234,7 +250,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                             MediaQuery.of(context).size.width,
                                         buttonsBorderRadius:
                                             const BorderRadius.all(
-                                                Radius.circular(2)),
+                                          Radius.circular(2),
+                                        ),
                                         headerAnimationLoop: false,
                                         animType: AnimType.BOTTOMSLIDE,
                                         body: Center(
@@ -242,6 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                             mainAxisSize: MainAxisSize.min,
                                             children: [
                                               TextField(
+                                                // text field to input room id
                                                 controller: _controller,
                                                 keyboardType:
                                                     TextInputType.name,
@@ -255,12 +273,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ],
                                           ),
                                         ),
-                                        showCloseIcon: true,
                                         btnCancelOnPress: () {},
                                         btnOkText: 'Join',
                                         btnOkOnPress: () {
+                                          // get the room id entered by the user and redirect him to chessboard screen along with his credentials
                                           var rid = _controller.text;
-                                          print("room ID : ${rid}");
+                                          print("room ID : $rid");
 
                                           Navigator.of(context)
                                               .push(
@@ -275,8 +293,10 @@ class _HomeScreenState extends State<HomeScreen> {
                                             ),
                                           )
                                               .then((value) {
+                                            //  when the user comes back to thus screen ... and some value has been sent back from the other screen
                                             if (value != null) {
                                               print(value);
+                                              // show the message to the user in form of snack bar
                                               ScaffoldMessenger.of(context)
                                                   .showSnackBar(SnackBar(
                                                       backgroundColor:
@@ -284,6 +304,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                       content: Text(value)));
                                             }
                                           });
+                                          // clear the residual value from controller if any
                                           _controller.clear();
                                         },
                                       ).show();
@@ -302,8 +323,10 @@ class _HomeScreenState extends State<HomeScreen> {
                             child: Column(
                               children: [
                                 Expanded(
+                                  // show stats card
                                   flex: 1,
                                   child: InkWell(
+                                    // widget to detect tap (like a gesture detector)
                                     onTap: () {
                                       Navigator.of(context).push(
                                         MaterialPageRoute(
@@ -350,6 +373,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ),
                                 ),
                                 DashboardWidget(
+                                  // Chess Lessons Card
                                   widget: widget,
                                   onTap: () {
                                     Navigator.of(context).push(
@@ -392,6 +416,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             Positioned(
+              // Putting the image of titans at last to position it at the top of the stack
               child: Image.asset(
                 'graphics/main_pic.png',
                 width: MediaQuery.of(context).size.width * 2,
