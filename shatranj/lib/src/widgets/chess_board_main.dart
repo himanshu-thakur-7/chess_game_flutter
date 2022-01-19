@@ -201,6 +201,35 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           );
           socket.emit("Roger", {'Checkmate'});
         });
+
+        socket.on("Resigned", (data) {
+          print("Game Resigned event");
+          print(data);
+
+//  update stats in data base
+
+          informUser(
+              message: 'You Win!',
+              dialogueType: DialogType.SUCCES,
+              animType: AnimType.RIGHSLIDE,
+              desc: 'Opponent resigned');
+
+          FirebaseFirestore.instance
+              .collection("users")
+              .doc("${widget.userOnDeviceID}")
+              .update({
+            "wins": FieldValue.increment(1),
+            "total": FieldValue.increment(1),
+          }).then(
+            (_) => {
+              print("stats updated!"),
+            },
+          );
+          socket.emit("Roger", {'Resignation accepted'});
+        });
+
+        
+
         // // stalemate event handler
         socket.on("Stalemate", (data) {
           informUser(
@@ -326,15 +355,29 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   }
 
   resign() {
-    if (widget.comp) {
-      isGameStarted = false;
-
+    
       informUser(
           message: 'You Lose',
           dialogueType: DialogType.ERROR,
           animType: AnimType.SCALE,
           desc: 'By Resignation!');
-    }
+
+        if(widget.comp == false && isGameStarted == true)
+        {
+          socket.emit('resign game',{'Game Over'});
+          FirebaseFirestore.instance
+              .collection("users")
+              .doc("${widget.userOnDeviceID}")
+              .update({
+            "losses": FieldValue.increment(1),
+            "total": FieldValue.increment(1),
+          }).then(
+            (_) => {
+              print("stats updated!"),
+            },
+          );
+        }
+    
   }
 
   informUser({
@@ -368,18 +411,19 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        if (isGameStarted == true) {
+        if (widget.comp || isGameStarted == true) {
           AwesomeDialog(
             context: widget.context,
             animType: AnimType.RIGHSLIDE,
             headerAnimationLoop: true,
             dialogType: DialogType.QUESTION,
             showCloseIcon: false,
-            title: 'Resign?',
+            title: 'Resign',
             desc: 'Do you wish to resign the game?',
             btnOkOnPress: () {
               resign();
             },
+            btnCancelOnPress: (){},
             btnOkText: 'Yes',
             btnCancelText: 'No',
             dismissOnTouchOutside: false,

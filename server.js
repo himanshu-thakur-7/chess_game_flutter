@@ -63,7 +63,10 @@ io.on('connection', function (socket) {
         socket.to(roomID).emit("Checkmate", "Checkmated bro!!");
 
       });
-
+      socket.on("resign game",(data) => {
+        console.log(data);
+        socket.to(roomID).emit("Resigned",'You win by resignation');
+      })
       socket.on("draw", (data) => {
         console.log(data);
         io.to(roomID).emit("Draw", data);
@@ -74,6 +77,8 @@ io.on('connection', function (socket) {
         io.to(roomID).emit("Stalemate", "Stalemate bro!!");
 
       });
+
+
       socket.on('exit room', (reason) => {
         console.log('exiting room');
         // roomsInfo[roomID]--;
