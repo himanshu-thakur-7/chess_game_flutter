@@ -13,7 +13,7 @@ GlobalKey<ChessBoard2State> ck = GlobalKey<ChessBoard2State>();
 bool? isPlayerWhite;
 bool? isPlayerTurn;
 String? existingSocketId;
-
+bool? isGameStarted;
 const finalURL = "https://chess-server7.herokuapp.com";
 const testURL = "http://localhost:8080";
 
@@ -113,6 +113,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                       dialog.dismiss(),
                       setState(() {}),
                     },
+                  isGameStarted = true,
                   _controller.emitState(),
                   print("${_controller.isGameNull()}: from start game event"),
                   socket.emit('loadUser', widget.userOnDeviceID),
@@ -264,6 +265,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   void initState() {
     super.initState();
     _controller = GameController();
+    isGameStarted = false;
     isPlayerTurn = true;
     isPlayerWhite = true;
     existingSocketId = "";
@@ -323,6 +325,18 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     });
   }
 
+  resign() {
+    if (widget.comp) {
+      isGameStarted = false;
+
+      informUser(
+          message: 'You Lose',
+          dialogueType: DialogType.ERROR,
+          animType: AnimType.SCALE,
+          desc: 'By Resignation!');
+    }
+  }
+
   informUser({
     message,
     dialogueType,
@@ -352,33 +366,58 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height / 1.2,
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        mainAxisAlignment: MainAxisAlignment.center,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          opponentID == null
-              ? const UserWidget(
-                  username: "computer",
-                  profilePicURL:
-                      "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
-              : buildUserWidget(opponentID),
-          const SizedBox(height: 10),
-          ChessBoard2(
-            userOnDeviceID: widget.userOnDeviceID,
-            showDialog: informUser,
-            chessKey: ck,
-            boardOrientation: isPlayerWhite! ? WHITE : BLACK,
-            gc: _controller,
-            canMove: isPlayerTurn!,
-            onMove: communicateMoves,
-            vsComp: widget.comp,
-          ),
-          const SizedBox(height: 10),
-          buildUserWidget(widget.userOnDeviceID),
-        ],
+    return WillPopScope(
+      onWillPop: () {
+        if (isGameStarted == true) {
+          AwesomeDialog(
+            context: widget.context,
+            animType: AnimType.RIGHSLIDE,
+            headerAnimationLoop: true,
+            dialogType: DialogType.QUESTION,
+            showCloseIcon: false,
+            title: 'Resign?',
+            desc: 'Do you wish to resign the game?',
+            btnOkOnPress: () {
+              resign();
+            },
+            btnOkText: 'Yes',
+            btnCancelText: 'No',
+            dismissOnTouchOutside: false,
+          ).show();
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text('You can\'t go back at this stage!')));
+        }
+        return Future.value(false);
+      },
+      child: Container(
+        height: MediaQuery.of(context).size.height / 1.2,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            opponentID == null
+                ? const UserWidget(
+                    username: "computer",
+                    profilePicURL:
+                        "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQXHCK1BEpJ_YSw8Po8kAG6gRu2OVnTGH6YXg&usqp=CAU")
+                : buildUserWidget(opponentID),
+            const SizedBox(height: 10),
+            ChessBoard2(
+              userOnDeviceID: widget.userOnDeviceID,
+              showDialog: informUser,
+              chessKey: ck,
+              boardOrientation: isPlayerWhite! ? WHITE : BLACK,
+              gc: _controller,
+              canMove: isPlayerTurn!,
+              onMove: communicateMoves,
+              vsComp: widget.comp,
+            ),
+            const SizedBox(height: 10),
+            buildUserWidget(widget.userOnDeviceID),
+          ],
+        ),
       ),
     );
     // : const RoomFullScreen();

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:chess_ui/models/video_model.dart';
 import 'package:chess_ui/services/api_service.dart';
 import 'package:flutter/material.dart';
@@ -12,15 +14,17 @@ class LearnChessScreen extends StatefulWidget {
   _LearnChessScreenState createState() => _LearnChessScreenState();
 }
 
+List<Video> _videos = [];
+
 class _LearnChessScreenState extends State<LearnChessScreen> {
-  List<Video> _videos = [];
   bool isLoading = true;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    _renderPlaylist();
+    _videos = [];
+    if (_videos.isEmpty) _renderPlaylist();
   }
 
   _renderPlaylist() async {
@@ -116,20 +120,55 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
             ? NotificationListener<ScrollNotification>(
                 onNotification: (ScrollNotification scrollDetails) {
                   if (!isLoading &&
-                      _videos.length != 15 &&
+                      _videos.length != 19 &&
                       scrollDetails.metrics.pixels ==
                           scrollDetails.metrics.maxScrollExtent) {
                     _loadMoreVideos();
                   }
                   return false;
                 },
-                child: ListView.builder(
-                  itemCount: _videos.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    Video video = _videos[index];
-                    return _buildVideo(video);
-                  },
-                ),
+                child: CustomScrollView(slivers: [
+                  SliverAppBar(
+                    expandedHeight: 200.0,
+                    floating: true,
+                    snap: true,
+                    pinned: true,
+                    flexibleSpace: FlexibleSpaceBar(
+                        title: const Text(
+                          "Let's Learn Chess!",
+                          style: TextStyle(
+                              fontSize: 20.0,
+                              fontWeight: FontWeight.bold,
+                              color: Colors.white),
+                        ),
+                        centerTitle: true,
+                        background: Container(
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                          image: AssetImage(
+                            'graphics/poster2.jpg',
+                          ),
+                          fit: BoxFit.cover,
+                        )))),
+                  ),
+                  SliverList(
+                      delegate: SliverChildBuilderDelegate((context, index) {
+                    return _buildVideo(_videos[index]);
+                  }, childCount: max(_videos.length, 1)))
+                  // : const Center(
+                  //     child: CircularProgressIndicator(
+                  //       color: Color.fromRGBO(251, 209, 76, 1.0),
+                  //     ),
+                  //   )
+                ]),
+
+                //  ListView.builder(
+                //   itemCount: _videos.length,
+                //   itemBuilder: (BuildContext context, int index) {
+                //     Video video = _videos[index];
+                //     return _buildVideo(video);
+                //   },
+                // ),
               )
             : const Center(
                 child: CircularProgressIndicator(

@@ -16,6 +16,7 @@ class App extends StatelessWidget {
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
+          primarySwatch: Colors.purple,
           fontFamily: 'Poppins',
           inputDecorationTheme: ThemeData.dark().inputDecorationTheme,
           primaryColor: const Color.fromRGBO(34, 0, 53, 1.0),

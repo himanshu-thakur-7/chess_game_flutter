@@ -17,7 +17,7 @@ class APIService {
     Map<String, String> params = {
       'part': 'snippet',
       'playlistId': _playlistId,
-      'max_Results': '8',
+      'max_Results': '50',
       'pageToken': _nextPageToken,
       'key': API_KEY
     };
@@ -40,9 +40,11 @@ class APIService {
       _nextPageToken = data["nextPageToken"] ?? "";
       List<dynamic> videosJson = data["items"];
 
-      print("From api service ${videosJson[2]}");
+      // print("From api service ${videosJson[2]}");
 
-      print("From api service ${videosJson[3]}");
+      // print("From api service ${videosJson[3]}");
+
+      print("id:${data['items'][0]['snippet']['channelId']}");
 
       List<Video> videos = [];
       videosJson.forEach(
@@ -52,6 +54,7 @@ class APIService {
           ),
         ),
       );
+      print("Videos  number${videos.length}");
       return videos;
     } else {
       throw json.decode(response.body)['error']['message'];
