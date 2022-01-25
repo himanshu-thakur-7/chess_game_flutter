@@ -16,6 +16,8 @@ class _VideoScreenState extends State<VideoScreen> {
   @override
   void initState() {
     super.initState();
+    // setting up the Youtube Player Controller
+
     _controller = YoutubePlayerController(
       initialVideoId: widget.id,
       flags: const YoutubePlayerFlags(
@@ -35,6 +37,7 @@ class _VideoScreenState extends State<VideoScreen> {
     );
   }
 
+// building the youtube video player
   youtubePlayer() {
     return Center(
       child: FittedBox(

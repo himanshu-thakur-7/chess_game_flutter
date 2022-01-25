@@ -4,6 +4,7 @@ import 'package:chess_ui/src/squares_chessboard_dart/square_chess_board.dart';
 import 'package:chess_ui/src/squares_chessboard_dart/game_controller.dart';
 import 'package:chess_ui/src/widgets/user_widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:squares/squares.dart';
 import 'package:flutter/material.dart';
 import 'package:socket_io_client/socket_io_client.dart' as IO;
@@ -44,6 +45,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   var opponentID;
   var t = Timer(Duration(seconds: 1000000000000), () {});
   var dialog;
+
+  var user = FirebaseAuth.instance.currentUser;
   Widget buildUserWidget(String userID) {
     return StreamBuilder(
         stream: FirebaseFirestore.instance
@@ -116,7 +119,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                   isGameStarted = true,
                   _controller.emitState(),
                   print("${_controller.isGameNull()}: from start game event"),
-                  socket.emit('loadUser', widget.userOnDeviceID),
+                  socket.emit('loadUser', user!.uid),
                   socket.on(
                       'displayUser',
                       (userID) => {
@@ -188,10 +191,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               animType: AnimType.RIGHSLIDE,
               desc: '');
 
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc("${widget.userOnDeviceID}")
-              .update({
+          FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
             "losses": FieldValue.increment(1),
             "total": FieldValue.increment(1),
           }).then(
@@ -214,10 +214,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               animType: AnimType.RIGHSLIDE,
               desc: 'Opponent resigned');
 
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc("${widget.userOnDeviceID}")
-              .update({
+          FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
             "wins": FieldValue.increment(1),
             "total": FieldValue.increment(1),
           }).then(
@@ -228,8 +225,6 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           socket.emit("Roger", {'Resignation accepted'});
         });
 
-        
-
         // // stalemate event handler
         socket.on("Stalemate", (data) {
           informUser(
@@ -238,10 +233,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               animType: AnimType.BOTTOMSLIDE,
               desc: 'No valid moves possible');
 
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc("${widget.userOnDeviceID}")
-              .update({
+          FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
             "draws": FieldValue.increment(1),
             "total": FieldValue.increment(1),
           }).then(
@@ -258,10 +250,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               animType: AnimType.TOPSLIDE,
               desc: data);
 
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc("${widget.userOnDeviceID}")
-              .update({
+          FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
             "draws": FieldValue.increment(1),
             "total": FieldValue.increment(1),
           }).then(
@@ -355,29 +344,23 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   }
 
   resign() {
-    
-      informUser(
-          message: 'You Lose',
-          dialogueType: DialogType.ERROR,
-          animType: AnimType.SCALE,
-          desc: 'By Resignation!');
+    informUser(
+        message: 'You Lose',
+        dialogueType: DialogType.ERROR,
+        animType: AnimType.SCALE,
+        desc: 'By Resignation!');
 
-        if(widget.comp == false && isGameStarted == true)
-        {
-          socket.emit('resign game',{'Game Over'});
-          FirebaseFirestore.instance
-              .collection("users")
-              .doc("${widget.userOnDeviceID}")
-              .update({
-            "losses": FieldValue.increment(1),
-            "total": FieldValue.increment(1),
-          }).then(
-            (_) => {
-              print("stats updated!"),
-            },
-          );
-        }
-    
+    if (widget.comp == false && isGameStarted == true) {
+      socket.emit('resign game', {'Game Over'});
+      FirebaseFirestore.instance.collection("users").doc(user!.uid).update({
+        "losses": FieldValue.increment(1),
+        "total": FieldValue.increment(1),
+      }).then(
+        (_) => {
+          print("stats updated!"),
+        },
+      );
+    }
   }
 
   informUser({
@@ -423,7 +406,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             btnOkOnPress: () {
               resign();
             },
-            btnCancelOnPress: (){},
+            btnCancelOnPress: () {},
             btnOkText: 'Yes',
             btnCancelText: 'No',
             dismissOnTouchOutside: false,
@@ -449,7 +432,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                 : buildUserWidget(opponentID),
             const SizedBox(height: 10),
             ChessBoard2(
-              userOnDeviceID: widget.userOnDeviceID,
+              userOnDeviceID: user!.uid,
               showDialog: informUser,
               chessKey: ck,
               boardOrientation: isPlayerWhite! ? WHITE : BLACK,
@@ -459,11 +442,10 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               vsComp: widget.comp,
             ),
             const SizedBox(height: 10),
-            buildUserWidget(widget.userOnDeviceID),
+            buildUserWidget(user!.uid),
           ],
         ),
       ),
     );
-    // : const RoomFullScreen();
   }
 }

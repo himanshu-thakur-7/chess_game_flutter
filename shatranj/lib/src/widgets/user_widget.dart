@@ -19,7 +19,8 @@ class UserWidget extends StatelessWidget {
         ),
         Text(
           username.toUpperCase(),
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
+          style:
+              const TextStyle(color: Colors.white, fontWeight: FontWeight.w600),
         ),
       ],
     );

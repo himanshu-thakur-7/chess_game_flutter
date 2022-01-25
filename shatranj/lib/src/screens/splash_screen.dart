@@ -14,9 +14,9 @@ class SplashScreen extends StatefulWidget {
 class _SplashScreenState extends State<SplashScreen> {
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
 
+// Displaying the splash screen for 3 seconds
     Timer(
       const Duration(seconds: 3),
       () => Navigator.pushReplacement(

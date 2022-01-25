@@ -14,11 +14,11 @@ class _StatsScreenState extends State<StatsScreen> {
   Map<String, dynamic>? info;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     getData();
   }
 
+// fetching user's stats from cloud firestore database
   getData() {
     var user = FirebaseAuth.instance.currentUser;
     FirebaseFirestore.instance
@@ -37,14 +37,15 @@ class _StatsScreenState extends State<StatsScreen> {
     return Scaffold(
       backgroundColor: const Color.fromRGBO(34, 0, 53, 1.0),
       body: Center(
-          child: info != null
-              ? StatsPieChart(
-                  wins: info!['wins'],
-                  losses: info!['losses'],
-                  draws: info!["draws"],
-                  total: info!['total'],
-                )
-              : const CircularProgressIndicator()),
+        child: info != null
+            ? StatsPieChart(
+                wins: info!['wins'],
+                losses: info!['losses'],
+                draws: info!["draws"],
+                total: info!['total'],
+              )
+            : const CircularProgressIndicator(),
+      ),
     );
   }
 }

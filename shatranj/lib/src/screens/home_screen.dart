@@ -29,9 +29,11 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
 
     //  Get the current user information (username and profile picture )
+
+    var user = FirebaseAuth.instance.currentUser;
     final snapshots = FirebaseFirestore.instance
         .collection('users')
-        .doc(widget.userOnDeviceID)
+        .doc(user!.uid)
         .snapshots();
     print(snapshots.forEach((element) {
       print(element.get("image_url"));
@@ -90,6 +92,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                 fit: BoxFit.contain,
                                 child: Text(
                                   "Hi ${userName ?? ""}!", // interpolating the user name to greet
+                                  overflow: TextOverflow.ellipsis,
                                   style: const TextStyle(
                                       fontSize: 20,
                                       fontWeight: FontWeight.bold,

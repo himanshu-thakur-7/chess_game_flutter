@@ -14,6 +14,7 @@ class LearnChessScreen extends StatefulWidget {
   _LearnChessScreenState createState() => _LearnChessScreenState();
 }
 
+// list for storing all videos of youtube playlist
 List<Video> _videos = [];
 
 class _LearnChessScreenState extends State<LearnChessScreen> {
@@ -21,21 +22,20 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _videos = [];
+    // fill the _videos array with videos on init state
     if (_videos.isEmpty) _renderPlaylist();
   }
 
   _renderPlaylist() async {
     _videos = await APIService.instance.fetchVideosFromPlaylist();
-    print("from _render playlist");
-    _videos.forEach((video) => print(video.title));
     setState(() {
       isLoading = false;
     });
   }
 
+// building the widget for each video in the playlist (with thumbnail and title)
   _buildVideo(Video video) {
     return GestureDetector(
       onTap: () => {
@@ -45,7 +45,6 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
             builder: (_) => VideoScreen(id: video.id),
           ),
         ).then((value) => {
-              print("back on to video list Screen"),
               SystemChrome.setPreferredOrientations(
                   [DeviceOrientation.portraitUp])
             })
@@ -80,22 +79,24 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
               ),
             ),
             Expanded(
-                child: Container(
-              margin: EdgeInsets.only(left: 10.0),
-              child: Text(
-                video.title,
-                style: const TextStyle(
-                    fontSize: 16.0,
-                    color: Colors.white,
-                    fontWeight: FontWeight.w600),
+              child: Container(
+                margin: EdgeInsets.only(left: 10.0),
+                child: Text(
+                  video.title,
+                  style: const TextStyle(
+                      fontSize: 16.0,
+                      color: Colors.white,
+                      fontWeight: FontWeight.w600),
+                ),
               ),
-            ))
+            )
           ],
         ),
       ),
     );
   }
 
+// add more videos by accessing next page of youtube v3 API
   _loadMoreVideos() async {
     isLoading = true;
     List<Video> moreVideos =
@@ -107,73 +108,64 @@ class _LearnChessScreenState extends State<LearnChessScreen> {
     isLoading = false;
   }
 
+// build the learn chess screen
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          backgroundColor: const Color.fromRGBO(0, 210, 211, 0.9),
-          title: const Center(child: Text('Let\'s Learn Chess')),
-        ),
-        backgroundColor: Theme.of(context).primaryColor,
-        body: _videos.isNotEmpty
-            ? NotificationListener<ScrollNotification>(
-                onNotification: (ScrollNotification scrollDetails) {
-                  if (!isLoading &&
-                      _videos.length != 19 &&
-                      scrollDetails.metrics.pixels ==
-                          scrollDetails.metrics.maxScrollExtent) {
-                    _loadMoreVideos();
-                  }
-                  return false;
-                },
-                child: CustomScrollView(slivers: [
-                  SliverAppBar(
-                    expandedHeight: 200.0,
-                    floating: true,
-                    snap: true,
-                    pinned: true,
-                    flexibleSpace: FlexibleSpaceBar(
-                        title: const Text(
-                          "Let's Learn Chess!",
-                          style: TextStyle(
-                              fontSize: 20.0,
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white),
-                        ),
-                        centerTitle: true,
-                        background: Container(
-                            decoration: const BoxDecoration(
-                                image: DecorationImage(
+      backgroundColor: Theme.of(context).primaryColor,
+      body: _videos.isNotEmpty
+          ? NotificationListener<ScrollNotification>(
+              onNotification: (ScrollNotification scrollDetails) {
+                if (!isLoading &&
+                    _videos.length != 19 &&
+                    scrollDetails.metrics.pixels ==
+                        scrollDetails.metrics.maxScrollExtent) {
+                  _loadMoreVideos();
+                }
+                return false;
+              },
+              child: CustomScrollView(slivers: [
+                SliverAppBar(
+                  expandedHeight: 200.0,
+                  floating: true,
+                  snap: true,
+                  pinned: true,
+                  flexibleSpace: FlexibleSpaceBar(
+                    title: const Text(
+                      "Let's Learn Chess!",
+                      style: TextStyle(
+                          fontSize: 20.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white),
+                    ),
+                    centerTitle: true,
+                    background: Container(
+                      decoration: const BoxDecoration(
+                        image: DecorationImage(
                           image: AssetImage(
                             'graphics/poster2.jpg',
                           ),
                           fit: BoxFit.cover,
-                        )))),
+                        ),
+                      ),
+                    ),
                   ),
-                  SliverList(
-                      delegate: SliverChildBuilderDelegate((context, index) {
-                    return _buildVideo(_videos[index]);
-                  }, childCount: max(_videos.length, 1)))
-                  // : const Center(
-                  //     child: CircularProgressIndicator(
-                  //       color: Color.fromRGBO(251, 209, 76, 1.0),
-                  //     ),
-                  //   )
-                ]),
-
-                //  ListView.builder(
-                //   itemCount: _videos.length,
-                //   itemBuilder: (BuildContext context, int index) {
-                //     Video video = _videos[index];
-                //     return _buildVideo(video);
-                //   },
-                // ),
-              )
-            : const Center(
-                child: CircularProgressIndicator(
-                  color: Color.fromRGBO(251, 209, 76, 1.0),
                 ),
-              ));
+                SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      return _buildVideo(_videos[index]);
+                    },
+                    childCount: max(_videos.length, 1),
+                  ),
+                )
+              ]),
+            )
+          : const Center(
+              child: CircularProgressIndicator(
+                color: Color.fromRGBO(251, 209, 76, 1.0),
+              ),
+            ),
+    );
   }
 }

@@ -55,7 +55,6 @@ class _ChessBoardScreenState extends State<ChessBoardScreen> {
           ],
         ),
       ),
-      // body: const ChessBoardWidget(),
     );
   }
 }
