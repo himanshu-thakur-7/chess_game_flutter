@@ -16,7 +16,7 @@ class _SplashScreenState extends State<SplashScreen> {
   void initState() {
     super.initState();
 
-// Displaying the splash screen for 3 seconds
+// Displaying the splash screen for 3 seconds and then show the homescreen
     Timer(
       const Duration(seconds: 3),
       () => Navigator.pushReplacement(

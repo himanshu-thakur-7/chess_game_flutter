@@ -13,9 +13,9 @@ class UserImagePicker extends StatefulWidget {
 }
 
 class _UserImagePickerState extends State<UserImagePicker> {
-  File? _pickedImage;
+  File? _pickedImage;                             
 
-  void _pickImage() async {
+  void _pickImage() async {                           // function for picking image from gallery
     ImagePicker ip = ImagePicker();
     final XFile? image = await ip.pickImage(
       source: ImageSource.gallery,

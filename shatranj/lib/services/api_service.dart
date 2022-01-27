@@ -40,9 +40,6 @@ class APIService {
       _nextPageToken = data["nextPageToken"] ?? "";
       List<dynamic> videosJson = data["items"];
 
-      // print("From api service ${videosJson[2]}");
-
-      // print("From api service ${videosJson[3]}");
 
       print("id:${data['items'][0]['snippet']['channelId']}");
 

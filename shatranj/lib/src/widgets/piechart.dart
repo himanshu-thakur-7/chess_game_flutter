@@ -37,8 +37,10 @@ class StatsPieChartState extends State<StatsPieChart> {
                       child: AspectRatio(
                         aspectRatio: 1,
                         child: PieChart(
+                          // PieChart Widget
                           PieChartData(
-                              pieTouchData: PieTouchData(touchCallback:
+                            pieTouchData: PieTouchData(
+                              touchCallback:
                                   (FlTouchEvent event, pieTouchResponse) {
                                 setState(() {
                                   if (!event.isInterestedForInteractions ||
@@ -50,17 +52,19 @@ class StatsPieChartState extends State<StatsPieChart> {
                                   touchedIndex = pieTouchResponse
                                       .touchedSection!.touchedSectionIndex;
                                 });
-                              }),
-                              borderData: FlBorderData(
-                                show: false,
-                              ),
-                              sectionsSpace: 0,
-                              centerSpaceRadius: 140,
-                              sections: showingSections(
-                                  wins: widget.wins,
-                                  losses: widget.losses,
-                                  draws: widget.draws,
-                                  total: widget.total)),
+                              },
+                            ),
+                            borderData: FlBorderData(
+                              show: false,
+                            ),
+                            sectionsSpace: 0,
+                            centerSpaceRadius: 140,
+                            sections: showingSections(
+                                wins: widget.wins,
+                                losses: widget.losses,
+                                draws: widget.draws,
+                                total: widget.total),
+                          ),
                         ),
                       ),
                     ),
@@ -73,7 +77,6 @@ class StatsPieChartState extends State<StatsPieChart> {
                   left: 95.0,
                   top: 100.0,
                   child: Container(
-                    // color: Colors.white,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                       mainAxisSize: MainAxisSize.min,

@@ -1,15 +1,16 @@
-const base64id = require('base64id');
-const { URL } = require('url');
+
 let roomsInfo = {};
 var server = require('http').createServer((req, res) => {
   res.end('I am connected');
 });
 var io = require('socket.io')(server);
 
+
+// on connecting with socket.io server
 io.on('connection', function (socket) {
   console.log(socket.id, 'joined');
 
-
+  // when the client sends "playerReady" event
   socket.on('playerReady', (roomID) => {
     if (roomID !== undefined) {
       try {
@@ -24,29 +25,36 @@ io.on('connection', function (socket) {
           console.log(roomsInfo[roomID]);
         }
 
-
+        // if there are already 2 people in a room emit the room full event
         if (roomsInfo[roomID].length == 2) {
           console.log("Intruder ID", socket.id);
           io.to(socket.id).emit('roomFull', roomID);
         }
         else {
           console.log("Number of players:", roomsInfo[roomID].length);
+          // if the number of people in room are less than 2
           if (roomsInfo[roomID].length < 2 && roomsInfo[roomID].includes(socket.id) === false) {
 
             roomsInfo[roomID].push(socket.id);
             console.log('Player Count:', roomsInfo[roomID].length);
+
+            // make the client socket to join the room
             socket.join(roomID);
 
             console.log("Room status:", io.sockets.adapter.rooms);
           }
 
+          // when the number of socket clients in room are 2 
           if (roomsInfo[roomID].length === 2) {
 
             console.log('Player Count:', roomsInfo[roomID].length);
             console.log(socket.id);
+
+            // emit the event to start the game
             io.to(roomID).emit('startGame', socket.id);
           }
         }
+        // on the load user event .. inform the clients to load the user info
         socket.on("loadUser", (userID) => {
           socket.to(roomID).emit('displayUser', userID);
         })
@@ -54,31 +62,39 @@ io.on('connection', function (socket) {
       catch (e) {
         io.to(socket.id).emit('Error', e);
       }
+
+      // when the client emit a moved event
       socket.on('moved', (data) => {
         console.log(data);
         socket.to(roomID).emit('updateBoard', data);
       });
+
+      // when the client emits a checkmate event
       socket.on("checkmate", (data) => {
         console.log(data);
         socket.to(roomID).emit("Checkmate", "Checkmated bro!!");
 
       });
-      socket.on("resign game",(data) => {
+      // when the client emits a resign event
+      socket.on("resign game", (data) => {
         console.log(data);
-        socket.to(roomID).emit("Resigned",'You win by resignation');
+        socket.to(roomID).emit("Resigned", 'You win by resignation');
       })
+
+      // on draw event
       socket.on("draw", (data) => {
         console.log(data);
         io.to(roomID).emit("Draw", data);
 
       });
+      // on stalemate event
       socket.on("stalemate", (data) => {
         console.log(data);
         io.to(roomID).emit("Stalemate", "Stalemate bro!!");
 
       });
 
-
+      // when a client exists a room
       socket.on('exit room', (reason) => {
         console.log('exiting room');
         // roomsInfo[roomID]--;
@@ -94,6 +110,7 @@ io.on('connection', function (socket) {
         socket.disconnect(true);
 
       })
+      // when a client disconnects from server
       socket.on("disconnect", () => {
         console.log(socket.id, "disconnected");
       })

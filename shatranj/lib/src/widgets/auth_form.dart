@@ -38,7 +38,7 @@ class _AuthFormState extends State<AuthForm> {
   void _trySubmit() {
     final isValid = _formKey.currentState?.validate();
 
-    FocusScope.of(context).unfocus(); // close the keybpard after submission
+    FocusScope.of(context).unfocus(); // close the keyboard after submission
 
     if (_userImageFile == null && !_isLogin) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -51,7 +51,7 @@ class _AuthFormState extends State<AuthForm> {
       );
       return;
     }
-
+    // if the form filled is valid
     if (isValid == true) {
       _formKey.currentState?.save();
 
@@ -80,7 +80,7 @@ class _AuthFormState extends State<AuthForm> {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    if (!_isLogin)
+                    if (!_isLogin) // only show the image picker when signing up
                       UserImagePicker(
                         imagePickFn: _pickedImage,
                       ),
@@ -89,6 +89,7 @@ class _AuthFormState extends State<AuthForm> {
                       style: const TextStyle(color: Colors.white),
                       key: const ValueKey('email'),
                       validator: (value) {
+                        // check if the email entered is a valid one
                         if (value == null ||
                             value.isEmpty ||
                             EmailValidator.validate(value) == false) {
@@ -98,30 +99,28 @@ class _AuthFormState extends State<AuthForm> {
                       },
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                          errorStyle: TextStyle(color: Colors.amber[200]),
-                          enabledBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.amberAccent[100]!),
-                          ),
-                          focusedBorder: UnderlineInputBorder(
-                            borderSide:
-                                BorderSide(color: Colors.amberAccent[100]!),
-                          ),
-                          // fillColor: Colors.white,
-                          labelStyle: TextStyle(color: Colors.white70),
-                          // filled: true,
-                          focusColor: Colors.white,
-                          // filled: true,
-                          labelText: 'Email',
-                          prefixIcon: Icon(
-                            Icons.email,
-                            color: Theme.of(context).accentColor,
-                          )),
+                        errorStyle: TextStyle(color: Colors.amber[200]),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.amberAccent[100]!),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide:
+                              BorderSide(color: Colors.amberAccent[100]!),
+                        ),
+                        labelStyle: TextStyle(color: Colors.white70),
+                        focusColor: Colors.white,
+                        labelText: 'Email',
+                        prefixIcon: Icon(
+                          Icons.email,
+                          color: Theme.of(context).accentColor,
+                        ),
+                      ),
                       onSaved: (value) {
                         _userEmail = value;
                       },
                     ),
-                    if (!_isLogin)
+                    if (!_isLogin) // only show the username when signing up
                       TextFormField(
                         cursorColor: Colors.amber,
                         style: const TextStyle(color: Colors.white),
@@ -163,6 +162,7 @@ class _AuthFormState extends State<AuthForm> {
                       key: const ValueKey('password'),
                       validator: (val) {
                         if (val == null || val.isEmpty || val.length < 7) {
+                          // validation for password
                           return "Password must be atleast 7 characters long";
                         }
                         return null;
@@ -190,11 +190,12 @@ class _AuthFormState extends State<AuthForm> {
                       },
                     ),
                     const SizedBox(height: 12),
-                    if (widget.isLoading)
+                    if (widget
+                        .isLoading) // if the form is being submitted show a spinner
                       const CircularProgressIndicator(
                         color: Colors.amber,
                       ),
-                    if (!widget.isLoading)
+                    if (!widget.isLoading) // else show the submit button
                       ElevatedButton(
                         style: ButtonStyle(
                             backgroundColor:

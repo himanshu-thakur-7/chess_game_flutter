@@ -43,7 +43,7 @@ int? lock;
 class _ChessBoardWidgetState extends State<ChessBoardWidget> {
   bool canJoin = true;
   var opponentID;
-  var t = Timer(Duration(seconds: 1000000000000), () {});
+  var t = Timer(Duration(seconds: 10), () {});
   var dialog;
 
   var user = FirebaseAuth.instance.currentUser;
@@ -137,7 +137,6 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
                           isPlayerWhite = false;
                           isPlayerTurn = false;
                         }),
-                      // emit()
                     }
                 });
 
@@ -183,7 +182,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           print("checkmate event");
           print(data);
 
-//  update stats in data base
+          //  update stats in data base
 
           informUser(
               message: 'You Lose!',
@@ -199,14 +198,13 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               print("stats updated!"),
             },
           );
-          socket.emit("Roger", {'Checkmate'});
         });
 
         socket.on("Resigned", (data) {
           print("Game Resigned event");
           print(data);
 
-//  update stats in data base
+          //  update stats in data base
 
           informUser(
               message: 'You Win!',
@@ -222,10 +220,9 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               print("stats updated!"),
             },
           );
-          socket.emit("Roger", {'Resignation accepted'});
         });
 
-        // // stalemate event handler
+        //  stalemate event handler
         socket.on("Stalemate", (data) {
           informUser(
               message: 'Stalemate!',
@@ -242,7 +239,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
             },
           );
         });
-        // // draw event handler
+        //  draw event handler
         socket.on("Draw", (data) {
           informUser(
               message: 'Draw!',
@@ -258,7 +255,6 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
               print("stats updated!"),
             },
           );
-          socket.emit("Roger", {'Draw'});
         });
       } catch (e) {
         print(e.toString());
@@ -363,6 +359,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     }
   }
 
+// showing a dialogue informing about some event of game
   informUser({
     message,
     dialogueType,
@@ -395,6 +392,8 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
     return WillPopScope(
       onWillPop: () {
         if (widget.comp || isGameStarted == true) {
+          //  if the game is vs Computer or if the online game has started then the back button will give an option to user to resign
+
           AwesomeDialog(
             context: widget.context,
             animType: AnimType.RIGHSLIDE,
@@ -424,7 +423,7 @@ class _ChessBoardWidgetState extends State<ChessBoardWidget> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            opponentID == null
+            opponentID == null      // if the game is vs computer if the other user's image is not yet loaded
                 ? const UserWidget(
                     username: "computer",
                     profilePicURL:
