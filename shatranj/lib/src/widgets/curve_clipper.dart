@@ -19,7 +19,6 @@ class CurveClipper extends CustomClipper<Path> {
     path.close();
 
     return path;
-    // throw UnimplementedError();
   }
 
   @override
