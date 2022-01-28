@@ -5,7 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:squares/squares.dart';
 import 'game_controller.dart';
 
-class ChessBoard2 extends StatefulWidget {
+class ChessBoard extends StatefulWidget {
   final GameController gc = GameController();
   final int boardOrientation;
   final Function onMove;
@@ -14,7 +14,8 @@ class ChessBoard2 extends StatefulWidget {
   final GlobalKey chessKey;
   bool canMove;
   final userOnDeviceID;
-  ChessBoard2({
+
+  ChessBoard({
     Key? key,
     required GameController? gc,
     required this.boardOrientation,
@@ -27,39 +28,32 @@ class ChessBoard2 extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  ChessBoard2State createState() => ChessBoard2State();
+  ChessBoardState createState() => ChessBoardState();
 }
 
-class ChessBoard2State extends State<ChessBoard2> {
+class ChessBoardState extends State<ChessBoard> {
   PieceSet pieceSet = PieceSet.merida();
-  // bool? canMove;
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     startGame();
     setState(() {});
   }
 
   @override
-  void didUpdateWidget(covariant ChessBoard2 oldWidget) {
-    // TODO: implement didUpdateWidget
+  void didUpdateWidget(covariant ChessBoard oldWidget) {
     super.didUpdateWidget(oldWidget);
     if (widget.gc.getFen() != "") {
       print("loading updated fen");
       startGame(fen: widget.gc.getFen());
     } else {
-      print("calling start game from didUpdateWidget ");
       startGame();
-      print("hi from did update dep");
     }
-    // startGame();
   }
 
   @override
   Widget build(BuildContext context) {
-    print("setState called HotReload: Child Screen");
     return Center(
         key: widget.chessKey,
         child: Column(
@@ -74,6 +68,7 @@ class ChessBoard2State extends State<ChessBoard2> {
                     state: state.board
                         .copyWith(orientation: widget.boardOrientation),
                     pieceSet: pieceSet,
+                    // setting board theme
                     theme: widget.boardOrientation == WHITE
                         ? const BoardTheme(
                             lightSquare: Color(0xffdee3e6),
@@ -106,11 +101,13 @@ class ChessBoard2State extends State<ChessBoard2> {
         ));
   }
 
+// function program to start game
   void startGame({String? fen}) {
     widget.gc.startGame(
         fen: fen, vsEngine: false, playerColor: widget.boardOrientation);
   }
 
+// on move handler
   void onMove(Move move) {
     widget.gc.makeMove(move, vsEngine: widget.vsComp, widget: widget);
 
@@ -169,6 +166,7 @@ class ChessBoard2State extends State<ChessBoard2> {
     }
   }
 
+// convert from algebraic to move
   Move moveFromAlgebraic(String alg, BoardSize size) {
     int from = size.squareNumber(alg.substring(0, 2));
     int to = size.squareNumber(alg.substring(2, 4));

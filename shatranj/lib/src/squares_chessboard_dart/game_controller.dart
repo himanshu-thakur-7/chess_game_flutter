@@ -15,13 +15,14 @@ int? lf;
 int? lt;
 int? ck;
 bool? playable;
-GlobalKey<ChessBoard2State> gkc = GlobalKey();
+GlobalKey<ChessBoardState> gkc = GlobalKey();
 
 class GameController extends Cubit<GameState> {
   int pc = WHITE;
   GameController() : super(GameState.initial());
   bishop.Engine? engine;
   bool vsEngine = false;
+  // keeping counter of number of a times a position appears on board
   Map<String, int> fenCounter = {
     'rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq': 1
   };
@@ -84,6 +85,7 @@ class GameController extends Cubit<GameState> {
     return game!.fen;
   }
 
+// loading a fen
   loadFen(fen) {
     String old = game!.fen;
 
@@ -95,10 +97,12 @@ class GameController extends Cubit<GameState> {
     emitState();
   }
 
+// check if game is not initialized
   isGameNull() {
     return game == null;
   }
 
+// start the game
   void startGame(
       {String? fen, required bool vsEngine, required int playerColor}) {
     pc = playerColor;
@@ -110,7 +114,8 @@ class GameController extends Cubit<GameState> {
     emitState();
   }
 
-  void makeMove(Move move, {String? fen, bool? vsEngine, ChessBoard2? widget}) {
+// make a move in vs comp mode:
+  void makeMove(Move move, {String? fen, bool? vsEngine, ChessBoard? widget}) {
     if (game == null) {
       return;
     }
@@ -140,6 +145,7 @@ class GameController extends Cubit<GameState> {
     }
   }
 
+// make move in online mode
   void makeMovePlayer(data) {
     game!.loadFen(data["fen"]);
 
@@ -182,6 +188,7 @@ class GameController extends Cubit<GameState> {
     emit(gs!);
   }
 
+// check if game is in checkmate
   bool isCheckmate() {
     if (game!.checkmate) {
       return true;
@@ -189,6 +196,7 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
+// check if game is in draw
   bool isDraw() {
     if (game!.inDraw) {
       return true;
@@ -196,6 +204,7 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
+// check if game is draw by threefold repition
   bool isThreeFoldRep() {
     if (vsEngine) {
       if (game!.repetition) {
@@ -207,6 +216,7 @@ class GameController extends Cubit<GameState> {
     }
   }
 
+// checking threefold repition in online mode
   bool checkRepetitionOnline() {
     for (var v in fenCounter.values) {
       if (v == 3) {
@@ -216,6 +226,7 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
+// check if game is draw by insufficient material
   bool isInsuffMaterial() {
     if (game!.insufficientMaterial) {
       return true;
@@ -223,6 +234,7 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
+// check if game is stalemate
   bool isStalemate() {
     if (game!.stalemate) {
       return true;
@@ -230,7 +242,8 @@ class GameController extends Cubit<GameState> {
     return false;
   }
 
-  void engineMove(ChessBoard2? widget) async {
+// making engine move
+  void engineMove(ChessBoard? widget) async {
     emitState(true);
     await Future.delayed(Duration(milliseconds: 250));
     bishop.EngineResult result = await compute(engineSearch, game!);
@@ -260,6 +273,7 @@ class GameController extends Cubit<GameState> {
     }
   }
 
+// format the result of move made by engine
   String formatResult(bishop.EngineResult res) {
     if (game == null) return 'No Game';
     if (!res.hasMove) return 'No Move';
@@ -268,11 +282,13 @@ class GameController extends Cubit<GameState> {
   }
 }
 
+// maing the engine search for moves based on the given game state
 Future<bishop.EngineResult> engineSearch(bishop.Game game) async {
   return await bishop.Engine(game: game)
       .search(timeLimit: 1000, timeBuffer: 500);
 }
 
+// GameState class for storing additional info about the game
 class GameState extends Equatable {
   final PlayState state;
   final BoardSize size;
@@ -281,6 +297,7 @@ class GameState extends Equatable {
   final List<List<String>> hands;
   final bool thinking;
 
+// make canMove true if its our turn
   bool get canMove => state == PlayState.ourTurn;
 
   GameState({
@@ -326,6 +343,7 @@ enum PlayState {
   finished,
 }
 
+// convert from algebraic string to move
 Move moveFromAlgebraic(String alg, BoardSize size) {
   if (alg[1] == '@') {
     int from = HAND;
@@ -338,6 +356,7 @@ Move moveFromAlgebraic(String alg, BoardSize size) {
   return Move(from: from, to: to, promo: promo);
 }
 
+// convert from move to algebraic string
 String moveToAlgebraic(Move move, BoardSize size) {
   if (move.drop) {
     return '${move.piece!.toLowerCase()}@${size.squareName(move.to)}';
